@@ -1,7 +1,7 @@
 import pygame as py
 from pygame.locals import *
 from pygame import gfxdraw
-from cluster import get_data
+from process import get_data
 import cv2
 
 py.init()

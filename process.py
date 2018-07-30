@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+import math
 
 
 class obj:
@@ -80,6 +81,7 @@ def get_data(image):
 
             if len(apr) < 3:
                 continue
+
             xp = apr[:, 0]
             yp = apr[:, 1]
 
@@ -91,8 +93,7 @@ def get_data(image):
     return edge, img_rot, list_obj
 
 
-edge, new_img, list_poly = get_data("p9.jpg")
-
+# edge, new_img, list_poly = get_data("p9.jpg")
 
 # cv2.imshow("edge", edge)
 # cv2.imshow("final", new_img)

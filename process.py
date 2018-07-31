@@ -1,10 +1,9 @@
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
-import math
 
 
-class obj:
+class Obj:
 
     def __init__(self, tup_coor, coor, area, peri, center):
         self.tup_coor = tup_coor
@@ -86,15 +85,13 @@ def get_data(image):
             yp = apr[:, 1]
 
             tup_coor = list(zip(xp, yp))
-            list_obj.append(obj(tup_coor, apr, area, perimeter, center))
+            list_obj.append(Obj(tup_coor, apr, area, perimeter, center))
 
             total += 1
 
     return edge, img_rot, list_obj
 
-
 # edge, new_img, list_poly = get_data("p9.jpg")
-
 # cv2.imshow("edge", edge)
 # cv2.imshow("final", new_img)
 # cv2.waitKey(0)

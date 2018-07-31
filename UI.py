@@ -82,18 +82,21 @@ while 1:
         py.gfxdraw.filled_circle(screen, i[0], i[1], 2, white)
 
     for i in range(len(list_custom)):
+        if len(list_custom[i]) == 0:
+            continue
+        elif len(list_custom[i]) == 1:
+            py.gfxdraw.aacircle(screen, (list_custom[i])[0][0], (list_custom[i])[0][1], 4, white)
+            py.gfxdraw.filled_circle(screen, (list_custom[i])[0][0], (list_custom[i])[0][1], 4, white)
 
-        if len(list_custom[i]) == 2:
+        elif len(list_custom[i]) == 2:
             py.gfxdraw.line(screen, (list_custom[i])[0][0], (list_custom[i])[0][1], (list_custom[i])[1][0],
                             (list_custom[i])[1][1], white)
 
         else:
-
             py.gfxdraw.aapolygon(screen, list_custom[i], white)
             py.gfxdraw.filled_polygon(screen, list_custom[i], white)
 
     for event in py.event.get():
-
         keyinput = py.key.get_pressed()
 
         if event.type == py.QUIT:
@@ -111,7 +114,6 @@ while 1:
             elif keyinput[py.K_SPACE]:
                 list_custom.append(mouse_pos)
                 mouse_pos = []
-
         elif event.type == py.MOUSEBUTTONDOWN:
             a = py.mouse.get_pos()
             mouse_pos.append(a)

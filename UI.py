@@ -5,10 +5,9 @@ from process import get_data
 import cv2
 
 pygame.init()
-edge, new_img, list_obj = get_data("p11.jpg")
+edge, new_img, list_obj = get_data("p10.jpg")
 scX = new_img.shape[0]
 scY = new_img.shape[1]
-# print(scX, " ", scY)
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 # screen = pygame.display.set_mode((scY, scX))
 pygame.display.update()
@@ -66,11 +65,69 @@ def move(rank, direction, speed):
         list_obj[rank].tup_coor = list(zip(xp, yp))
 
 
+keydict = {"space": pygame.K_SPACE, "esc": pygame.K_ESCAPE, "up": pygame.K_UP, "down": pygame.K_DOWN,
+           "left": pygame.K_LEFT, "right": pygame.K_RIGHT,
+           "a": pygame.K_a,
+           "b": pygame.K_b,
+           "c": pygame.K_c,
+           "d": pygame.K_d,
+           "e": pygame.K_e,
+           "f": pygame.K_f,
+           "g": pygame.K_g,
+           "h": pygame.K_h,
+           "i": pygame.K_i,
+           "j": pygame.K_j,
+           "k": pygame.K_k,
+           "l": pygame.K_l,
+           "m": pygame.K_m,
+           "n": pygame.K_n,
+           "o": pygame.K_o,
+           "p": pygame.K_p,
+           "q": pygame.K_q,
+           "r": pygame.K_r,
+           "s": pygame.K_s,
+           "t": pygame.K_t,
+           "u": pygame.K_u,
+           "v": pygame.K_v,
+           "w": pygame.K_w,
+           "x": pygame.K_x,
+           "y": pygame.K_y,
+           "z": pygame.K_z,
+           "1": pygame.K_1,
+           "2": pygame.K_2,
+           "3": pygame.K_3,
+           "4": pygame.K_4,
+           "5": pygame.K_5,
+           "6": pygame.K_6,
+           "7": pygame.K_7,
+           "8": pygame.K_8,
+           "9": pygame.K_9,
+           "0": pygame.K_0}
+
+
+def keyPress(keyCheck=""):
+    pygame.event.clear()
+    keys = pygame.key.get_pressed()
+    if sum(keys) > 0:
+        if keyCheck == "" or keys[keydict[keyCheck.lower()]]:
+            return True
+    return False
+
+
+def mousePress():
+    pygame.event.clear()
+    mouse_st = pygame.mouse.get_pressed()
+    if mouse_st[0]:
+        return True
+    else:
+        return False
+
+
 while 1:
 
     list_poly = []
-    speed = 50
-    clock.tick(30)
+    speed = 10
+    clock.tick(90)
     screen.fill(purple)
 
     for i in range(len(list_obj)):
@@ -96,33 +153,27 @@ while 1:
             pygame.gfxdraw.aapolygon(screen, list_custom[i], white)
             pygame.gfxdraw.filled_polygon(screen, list_custom[i], white)
 
-    for event in pygame.event.get():
-        keyinput = pygame.key.get_pressed()
+    if keyPress("left"):
+        move(0, 1, speed)
+    elif keyPress("right"):
+        move(0, 2, speed)
+    elif keyPress("up"):
+        move(0, 3, speed)
+    elif keyPress("down"):
+        move(0, 4, speed)
+    elif keyPress("space"):
+        list_custom.append(mouse_pos)
+        mouse_pos = []
+    elif keyPress("esc"):
+        pygame.display.quit()
+        pygame.quit()
 
-        if event.type == pygame.QUIT:
-            pygame.display.quit()
-            pygame.quit()
-        elif event.type == pygame.KEYDOWN:
-            if keyinput[pygame.K_LEFT]:
-                move(0, 1, speed)
-            elif keyinput[pygame.K_RIGHT]:
-                move(0, 2, speed)
-            elif keyinput[pygame.K_UP]:
-                move(0, 3, speed)
-            elif keyinput[pygame.K_DOWN]:
-                move(0, 4, speed)
-            elif keyinput[pygame.K_SPACE]:
-                list_custom.append(mouse_pos)
-                mouse_pos = []
-            elif keyinput[pygame.K_ESCAPE]:
-                pygame.display.quit()
-                pygame.quit()
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            a = pygame.mouse.get_pos()
-            if len(mouse_pos) == 0:
-                mouse_pos.append(a)
-            if mouse_pos[-1] != a:
-                mouse_pos.append(a)
+    if mousePress():
+        a = pygame.mouse.get_pos()
+        if len(mouse_pos) == 0:
+            mouse_pos.append(a)
+        if mouse_pos[-1] != a:
+            mouse_pos.append(a)
 
         '''             smooth controls 
 

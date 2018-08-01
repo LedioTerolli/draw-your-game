@@ -1,16 +1,16 @@
-# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, pygameCharm, CLion, Android Studio and WebStorm
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, pyCharm, CLion, Android Studio and WebStorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
-align.pygame
-cont.pygame
-corners.pygame
+align.py
+cont.py
+corners.py
 doc.jpg
-document.pygame
-drop_ball.pygame
-edge.pygame
-findConTut.pygame
-four_point.pygame
-liveFeedTest.pygame
+document.py
+drop_ball.py
+edge.py
+findConTut.py
+four_point.py
+liveFeedTest.py
 p9.jpg
 p10.jpg
 p11.jpg
@@ -31,7 +31,7 @@ p11.jpg
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
-__pygamecache__/process.cpygamethon-36.pygamec
+__pycache__/process.cpython-36.pyc
 .idea/vcs.xml
 
 # Gradle

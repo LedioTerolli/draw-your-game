@@ -5,7 +5,7 @@ from process import get_data
 import cv2
 
 pygame.init()
-edge, new_img, list_obj = get_data("p9.jpg")
+edge, new_img, list_obj = get_data("p11.jpg")
 scX = new_img.shape[0]
 scY = new_img.shape[1]
 # print(scX, " ", scY)
@@ -19,84 +19,6 @@ blue = (0, 0, 255)
 clock = pygame.time.Clock()
 mouse_pos = []
 list_custom = []
-
-
-class newTextBox(pygame.sprite.Sprite):
-    def __init__(self, text, xpos, ypos, width, case, maxLength, fontSize):
-        pygame.sprite.Sprite.__init__(self)
-        self.text = ""
-        self.width = width
-        self.initialText = text
-        self.case = case
-        self.maxLength = maxLength
-        self.boxSize = int(fontSize * 1.7)
-        self.image = pygame.Surface((width, self.boxSize))
-        self.image.fill((255, 255, 255))
-        pygame.draw.rect(self.image, (0, 0, 0), [0, 0, width - 1, self.boxSize - 1], 2)
-        self.rect = self.image.get_rect()
-        self.fontFace = pygame.font.match_font("Arial")
-        self.fontColour = pygame.Color("black")
-        self.initialColour = (180, 180, 180)
-        self.font = pygame.font.Font(self.fontFace, fontSize)
-        self.rect.topleft = [xpos, ypos]
-        newSurface = self.font.render(self.initialText, True, self.initialColour)
-        self.image.blit(newSurface, [10, 5])
-
-    def update(self, keyevent):
-        key = keyevent.key
-        unicode = keyevent.unicode
-        if key > 31 and key < 127 and (
-                self.maxLength == 0 or len(self.text) < self.maxLength):  # only printable characters
-            if keyevent.mod in (1, 2) and self.case == 1 and key >= 97 and key <= 122:
-                # force lowercase letters
-                self.text += chr(key)
-            elif keyevent.mod == 0 and self.case == 2 and key >= 97 and key <= 122:
-                self.text += chr(key - 32)
-            else:
-                # use the unicode char
-                self.text += unicode
-
-        elif key == 8:
-            # backspace. repeat until clear
-            keys = pygame.key.get_pressed()
-            nexttime = pygame.time.get_ticks() + 200
-            deleting = True
-            while deleting:
-                keys = pygame.key.get_pressed()
-                if keys[pygame.K_BACKSPACE]:
-                    thistime = pygame.time.get_ticks()
-                    if thistime > nexttime:
-                        self.text = self.text[0:len(self.text) - 1]
-                        self.image.fill((255, 255, 255))
-                        pygame.draw.rect(self.image, (0, 0, 0), [0, 0, self.width - 1, self.boxSize - 1], 2)
-                        newSurface = self.font.render(self.text, True, self.fontColour)
-                        self.image.blit(newSurface, [10, 5])
-                        pygame.update.display()
-                        nexttime = thistime + 50
-                        pygame.event.clear()
-                else:
-                    deleting = False
-
-        self.image.fill((255, 255, 255))
-        pygame.draw.rect(self.image, (0, 0, 0), [0, 0, self.width - 1, self.boxSize - 1], 2)
-        newSurface = self.font.render(self.text, True, self.fontColour)
-        self.image.blit(newSurface, [10, 5])
-        if pygame.screen.refresh:
-            pygame.update.display()
-
-    def move(self, xpos, ypos, centre=False):
-        if centre:
-            self.rect.topleft = [xpos, ypos]
-        else:
-            self.rect.center = [xpos, ypos]
-
-    def clear(self):
-        self.image.fill((255, 255, 255))
-        pygame.draw.rect(self.image, (0, 0, 0), [0, 0, self.width - 1, self.boxSize - 1], 2)
-        newSurface = self.font.render(self.initialText, True, self.initialColour)
-        self.image.blit(newSurface, [10, 5])
-        if pygame.screen.refresh:
-            pygame.update.display()
 
 
 class Poly:
@@ -150,8 +72,6 @@ while 1:
     speed = 50
     clock.tick(30)
     screen.fill(purple)
-
-    sprite = newTextBox.__init__("abc", 200, 200, 30, 20, 100, 5)
 
     for i in range(len(list_obj)):
         list_poly.append(

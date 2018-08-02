@@ -16,6 +16,8 @@ p10.jpg
 p11.jpg
 test_rot.py
 
+__pycache__/
+*.py[cod]
 
 
 # User-specific stuff

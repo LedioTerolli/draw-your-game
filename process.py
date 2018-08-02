@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import imutils
 from matplotlib import pyplot as plt
 from win32api import GetSystemMetrics
 
@@ -18,39 +19,31 @@ def get_data(image):
     filename = image
     # filename = "%s" % filename
     img = cv2.imread(filename)
-
     screen_size_x = GetSystemMetrics(0)
     screen_size_y = GetSystemMetrics(1)
-
-    # img = np.zeros((screen_size_y, screen_size_x, 3), np.uint8) + img
-
-    hor_size = img.shape[1]
-    ver_size = img.shape[0]
-
-    max_dim = max(hor_size, ver_size)
-    rule = max(screen_size_x, screen_size_y)
-
-    if max_dim > rule:
-        shrink = rule / hor_size
-        img = cv2.resize(img, (0, 0), fx=shrink, fy=shrink)
+    bg = np.zeros((screen_size_y, screen_size_x, 3), np.uint8)
 
     hor_size = img.shape[1]
     ver_size = img.shape[0]
-
-    rot_shrink = hor_size / ver_size
 
     if ver_size > hor_size:
-        M = cv2.getRotationMatrix2D((hor_size / 2, ver_size / 2), 90, rot_shrink)
-        img = cv2.warpAffine(img, M, (hor_size, ver_size))
+        img = imutils.rotate_bound(img, -90)
 
+    hor_size = img.shape[1]
+    ver_size = img.shape[0]
+    max_dim = max(hor_size, ver_size)
+    rule = 1500
+    r = rule / img.shape[1]
+    dim = (int(rule), int(img.shape[0] * r))
+    if max_dim > rule:
+        img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+
+    img = img[0:screen_size_y, 0:screen_size_x]
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
     blurred_frame = cv2.GaussianBlur(gray, (9, 9), 0)
-
     thresh = cv2.adaptiveThreshold(blurred_frame, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
     edge = cv2.Canny(thresh, 100, 200)
     _, cnts, _ = cv2.findContours(edge, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-
     total = 0
     list_obj = []
 
@@ -59,17 +52,18 @@ def get_data(image):
         area = int(cv2.contourArea(c))
 
         if area < 10000:
-            i = 0.01
-        else:
             i = 0.03
+        else:
+            i = 0.01
 
-        if area > 100:
+        if area > 400:
             perimeter = cv2.arcLength(c, True)
             perimeter = round(perimeter, 2)
 
             epsilon = i * cv2.arcLength(c, True)
             approx = cv2.approxPolyDP(c, epsilon, True)
-            data = str(area) + "-" + str(len(approx)) + "-" + str(perimeter)
+            # data = str(area) + "-" + str(len(approx)) + "-" + str(perimeter)
+            data = str(area)
 
             M = cv2.moments(c)
             cX = int(M["m10"] / M["m00"])
@@ -96,7 +90,9 @@ def get_data(image):
 
     return edge, img, list_obj
 
-# edge, new_img, list_poly = get_data("p9.jpg")
+
+# edge, new_img, list_poly = get_data("p10.jpg")
+
 # cv2.imshow("edge", edge)
 # cv2.imshow("final", new_img)
 # cv2.waitKey(0)

@@ -15,7 +15,7 @@ class Obj:
         self.peri = peri
         self.center = center
 
-
+# removing sides less than 10 px
 def shape_eval(list):
     distance_list = []
 
@@ -34,10 +34,6 @@ def shape_eval(list):
     if sorted_list[0] < 20:
         list = np.delete(list, index_min, 0)
         print("deleted")
-
-
-    print(distance_list)
-    print("new list", list)
 
     return list
 
@@ -79,7 +75,7 @@ def get_data(image):
         area = int(cv2.contourArea(c))
 
         if area < 10000:
-            i = 0.03
+            i = 0.04
         else:
             i = 0.01
 
@@ -124,7 +120,7 @@ def get_data(image):
     return edge, img, list_obj
 
 
-edge, new_img, list_poly = get_data("p12.jpg")
-cv2.imshow("edge", edge)
-cv2.imshow("final", new_img)
-cv2.waitKey(0)
+# edge, new_img, list_poly = get_data("p12.jpg")
+# cv2.imshow("edge", edge)
+# cv2.imshow("final", new_img)
+# cv2.waitKey(0)

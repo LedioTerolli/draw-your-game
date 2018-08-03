@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import imutils
 from win32api import GetSystemMetrics
+import math
 from matplotlib import pyplot as plt
 
 
@@ -13,6 +14,34 @@ class Obj:
         self.area = area
         self.peri = peri
         self.center = center
+
+
+def shape_eval(list):
+    distance_list = []
+
+    for i in range(len(list) - 1):
+        distance =      math.sqrt(((list.item(i)(0) - list.item(i + 1)(0)) ** 2) + ((list.item(i)(1) - list.item(i + 1)(1)) ** 2))
+        print("list[i][0]", list.item(i)(0))
+        distance_list.append(distance)
+
+    special_dis =   math.sqrt(((list.item(0)(0) - list.item(-1)(0)) ** 2) + ((list.item(0)(1) - list.item(-1)(1)) ** 2))
+    distance_list.append(special_dis)
+    print(distance_list)
+
+    index_min = distance_list.index(min(distance_list))
+    sorted_list = sorted(distance_list)
+
+    print("index_min", index_min)
+    print("sorted_list", sorted_list)
+    print("list", list)
+
+    if abs(sorted_list[0] - sorted_list[1]) < 20:
+        list = np.delete(list, index_min)
+        print("deleted")
+
+    print("the list", list)
+
+    return list
 
 
 def get_data(image):
@@ -32,7 +61,7 @@ def get_data(image):
     hor_size = img.shape[1]
     ver_size = img.shape[0]
     max_dim = max(hor_size, ver_size)
-    rule = 1500
+    rule = 700
     r = rule / img.shape[1]
     dim = (int(rule), int(img.shape[0] * r))
     if max_dim > rule:
@@ -56,14 +85,20 @@ def get_data(image):
         else:
             i = 0.01
 
-        if area > 400:
+        if area > 100:
             perimeter = cv2.arcLength(c, True)
             perimeter = round(perimeter, 2)
 
             epsilon = i * cv2.arcLength(c, True)
             approx = cv2.approxPolyDP(c, epsilon, True)
-            # data = str(area) + "-" + str(len(approx)) + "-" + str(perimeter)
-            data = str(area)
+            apr = np.vstack(approx).squeeze()
+            if len(apr) < 3:
+                continue
+
+            print("not sorted", apr)
+            apr = shape_eval(apr)
+            print("apr", apr)
+            data = str(area) + "-" + str(len(apr))  # + "-" + str(perimeter)
 
             M = cv2.moments(c)
             cX = int(M["m10"] / M["m00"])
@@ -75,10 +110,12 @@ def get_data(image):
             cv2.putText(img, data, (cX + 5, cY - 7), cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 0.5, (0, 0, 0), 2)
             cv2.circle(img, (cX, cY), 3, (0, 0, 255), -1)
 
-            apr = np.vstack(approx).squeeze()
+            enlarge_rate_x = screen_size_x * 1.0 / max(img.shape[0], img.shape[1])
+            enlarge_rate_y = screen_size_y * 1.0 / min(img.shape[0], img.shape[1])
 
-            if len(apr) < 3:
-                continue
+            for i in range(len(apr)):
+                apr[i][0] = apr[i][0] * enlarge_rate_x
+                apr[i][1] = apr[i][1] * enlarge_rate_y
 
             xp = apr[:, 0]
             yp = apr[:, 1]
@@ -90,8 +127,9 @@ def get_data(image):
 
     return edge, img, list_obj
 
-# edge, new_img, list_poly = get_data("p10.jpg")
 
-# cv2.imshow("edge", edge)
-# cv2.imshow("final", new_img)
-# cv2.waitKey(0)
+edge, new_img, list_poly = get_data("p12.jpg")
+
+cv2.imshow("edge", edge)
+cv2.imshow("final", new_img)
+cv2.waitKey(0)

@@ -5,7 +5,7 @@ from pygame.locals import *
 import cv2
 
 pygame.init()
-edge, new_img, list_obj = get_data("p10.jpg")
+edge, new_img, list_obj = get_data("p12.jpg")
 scX = new_img.shape[0]
 scY = new_img.shape[1]
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)

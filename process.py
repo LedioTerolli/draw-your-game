@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import imutils
 from win32api import GetSystemMetrics
-import math
+from math import sqrt
 from matplotlib import pyplot as plt
 
 
@@ -20,26 +20,24 @@ def shape_eval(list):
     distance_list = []
 
     for i in range(len(list) - 1):
-        distance =      math.sqrt(((list.item(i)(0) - list.item(i + 1)(0)) ** 2) + ((list.item(i)(1) - list.item(i + 1)(1)) ** 2))
-        print("list[i][0]", list.item(i)(0))
+        distance = int(sqrt(
+            ((list.item((i, 0)) - list.item((i + 1, 0))) ** 2) + ((list.item((i, 1)) - list.item((i + 1, 1))) ** 2)))
         distance_list.append(distance)
 
-    special_dis =   math.sqrt(((list.item(0)(0) - list.item(-1)(0)) ** 2) + ((list.item(0)(1) - list.item(-1)(1)) ** 2))
+    special_dis = int(sqrt(
+        ((list.item((0, 0)) - list.item((-1, 0))) ** 2) + ((list.item((0, 1)) - list.item((-1, 1))) ** 2)))
     distance_list.append(special_dis)
-    print(distance_list)
 
     index_min = distance_list.index(min(distance_list))
     sorted_list = sorted(distance_list)
 
-    print("index_min", index_min)
-    print("sorted_list", sorted_list)
-    print("list", list)
-
-    if abs(sorted_list[0] - sorted_list[1]) < 20:
-        list = np.delete(list, index_min)
+    if sorted_list[0] < 20:
+        list = np.delete(list, index_min, 0)
         print("deleted")
 
-    print("the list", list)
+
+    print(distance_list)
+    print("new list", list)
 
     return list
 
@@ -95,9 +93,7 @@ def get_data(image):
             if len(apr) < 3:
                 continue
 
-            print("not sorted", apr)
             apr = shape_eval(apr)
-            print("apr", apr)
             data = str(area) + "-" + str(len(apr))  # + "-" + str(perimeter)
 
             M = cv2.moments(c)
@@ -114,8 +110,8 @@ def get_data(image):
             enlarge_rate_y = screen_size_y * 1.0 / min(img.shape[0], img.shape[1])
 
             for i in range(len(apr)):
-                apr[i][0] = apr[i][0] * enlarge_rate_x
-                apr[i][1] = apr[i][1] * enlarge_rate_y
+                apr[i, 0] = apr.item((i, 0)) * enlarge_rate_x
+                apr[i, 1] = apr.item((i, 1)) * enlarge_rate_y
 
             xp = apr[:, 0]
             yp = apr[:, 1]
@@ -129,7 +125,6 @@ def get_data(image):
 
 
 edge, new_img, list_poly = get_data("p12.jpg")
-
 cv2.imshow("edge", edge)
 cv2.imshow("final", new_img)
 cv2.waitKey(0)

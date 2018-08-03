@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
 import imutils
-from matplotlib import pyplot as plt
 from win32api import GetSystemMetrics
+from matplotlib import pyplot as plt
 
 
 class Obj:
@@ -89,7 +89,6 @@ def get_data(image):
             total += 1
 
     return edge, img, list_obj
-
 
 # edge, new_img, list_poly = get_data("p10.jpg")
 

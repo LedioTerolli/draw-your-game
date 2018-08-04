@@ -49,9 +49,9 @@ def get_data(image):
     hor_size = img.shape[1]
     ver_size = img.shape[0]
 
+    # rotate & resize
     if ver_size > hor_size:
         img = imutils.rotate_bound(img, -90)
-
     hor_size = img.shape[1]
     ver_size = img.shape[0]
     max_dim = max(hor_size, ver_size)
@@ -61,24 +61,23 @@ def get_data(image):
     if max_dim > rule:
         img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
 
+    # thresh & edge
     img = img[0:screen_size_y, 0:screen_size_x]
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     blurred_frame = cv2.GaussianBlur(gray, (9, 9), 0)
     thresh = cv2.adaptiveThreshold(blurred_frame, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
     edge = cv2.Canny(thresh, 100, 200)
     _, cnts, _ = cv2.findContours(edge, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
     total = 0
     list_obj = []
 
     for c in cnts:
-
         area = int(cv2.contourArea(c))
-
         if area < 10000:
             i = 0.04
         else:
             i = 0.01
-
         if area > 100:
             perimeter = cv2.arcLength(c, True)
             perimeter = round(perimeter, 2)
@@ -88,7 +87,6 @@ def get_data(image):
             apr = np.vstack(approx).squeeze()
             if len(apr) < 3:
                 continue
-
             apr = shape_eval(apr)
             data = str(area) + "-" + str(len(apr))  # + "-" + str(perimeter)
 
@@ -111,10 +109,9 @@ def get_data(image):
 
             xp = apr[:, 0]
             yp = apr[:, 1]
-
             tup_coor = list(zip(xp, yp))
             list_obj.append(Obj(tup_coor, apr, area, perimeter, center))
-
+            # print(len(apr))
             total += 1
 
     return edge, img, list_obj

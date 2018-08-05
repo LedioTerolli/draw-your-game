@@ -15,8 +15,9 @@ class Obj:
         self.peri = peri
         self.center = center
 
+
 # removing sides less than 10 px
-def shape_eval(list):
+def shape_eval(list, tolerance):
     distance_list = []
 
     for i in range(len(list) - 1):
@@ -31,9 +32,8 @@ def shape_eval(list):
     index_min = distance_list.index(min(distance_list))
     sorted_list = sorted(distance_list)
 
-    if sorted_list[0] < 20:
+    if sorted_list[0] < tolerance:
         list = np.delete(list, index_min, 0)
-        print("deleted")
 
     return list
 
@@ -85,9 +85,12 @@ def get_data(image):
             epsilon = i * cv2.arcLength(c, True)
             approx = cv2.approxPolyDP(c, epsilon, True)
             apr = np.vstack(approx).squeeze()
+
+            apr = shape_eval(apr, 10)
+
             if len(apr) < 3:
                 continue
-            apr = shape_eval(apr)
+
             data = str(area) + "-" + str(len(apr))  # + "-" + str(perimeter)
 
             M = cv2.moments(c)
@@ -115,7 +118,6 @@ def get_data(image):
             total += 1
 
     return edge, img, list_obj
-
 
 # edge, new_img, list_poly = get_data("p12.jpg")
 # cv2.imshow("edge", edge)

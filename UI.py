@@ -37,7 +37,6 @@ def mouse_press():
         return False
 
 
-
 class Poly:
     def __init__(self, screen, tup_coor, coor, area, peri, center, color):
         self.screen = screen
@@ -49,6 +48,7 @@ class Poly:
         self.color = color
         pygame.gfxdraw.aapolygon(screen, self.tup_coor, self.color)
         pygame.gfxdraw.filled_polygon(screen, self.tup_coor, self.color)
+
 
 def move(list_obj, rank, direction, speed):
     if direction == 1:
@@ -79,6 +79,7 @@ def move(list_obj, rank, direction, speed):
         yp = list_obj[rank].coor[:, 1]
         list_obj[rank].tup_coor = list(zip(xp, yp))
 
+
 while 1:
 
     list_poly = []
@@ -99,16 +100,16 @@ while 1:
         if len(list_custom[i]) == 0:
             continue
         elif len(list_custom[i]) == 1:
-            pygame.gfxdraw.aacircle(screen, (list_custom[i])[0][0], (list_custom[i])[0][1], 4, white)
-            pygame.gfxdraw.filled_circle(screen, (list_custom[i])[0][0], (list_custom[i])[0][1], 4, white)
+            pygame.gfxdraw.aacircle(screen, (list_custom[i])[0][0], (list_custom[i])[0][1], 10, red)
+            pygame.gfxdraw.filled_circle(screen, (list_custom[i])[0][0], (list_custom[i])[0][1], 10, red)
 
         elif len(list_custom[i]) == 2:
             pygame.gfxdraw.line(screen, (list_custom[i])[0][0], (list_custom[i])[0][1], (list_custom[i])[1][0],
-                                (list_custom[i])[1][1], white)
+                                (list_custom[i])[1][1], red)
 
         else:
-            pygame.gfxdraw.aapolygon(screen, list_custom[i], white)
-            pygame.gfxdraw.filled_polygon(screen, list_custom[i], white)
+            pygame.gfxdraw.aapolygon(screen, list_custom[i], red)
+            pygame.gfxdraw.filled_polygon(screen, list_custom[i], red)
 
     # controls
     if key_press("left"):

@@ -81,32 +81,32 @@ def move(list_obj, rank, direction, speed):
 
 
 while 1:
-
+    speed = 10
     list_poly = []
-    speed = 5
-    clock.tick(90)
+    clock.tick(120)
     screen.fill(purple)
 
+    # draw photo polygons
     for i in range(len(list_obj)):
         list_poly.append(
             Poly(screen, list_obj[i].tup_coor, list_obj[i].coor, list_obj[i].area, list_obj[i].peri, list_obj[i].center,
                  red))
 
+    # draw mouse points
     for i in mouse_pos:
         pygame.gfxdraw.aacircle(screen, i[0], i[1], 2, white)
         pygame.gfxdraw.filled_circle(screen, i[0], i[1], 2, white)
 
+    # draw mouse polygons
     for i in range(len(list_custom)):
         if len(list_custom[i]) == 0:
             continue
         elif len(list_custom[i]) == 1:
             pygame.gfxdraw.aacircle(screen, (list_custom[i])[0][0], (list_custom[i])[0][1], 10, red)
             pygame.gfxdraw.filled_circle(screen, (list_custom[i])[0][0], (list_custom[i])[0][1], 10, red)
-
         elif len(list_custom[i]) == 2:
             pygame.gfxdraw.line(screen, (list_custom[i])[0][0], (list_custom[i])[0][1], (list_custom[i])[1][0],
                                 (list_custom[i])[1][1], red)
-
         else:
             pygame.gfxdraw.aapolygon(screen, list_custom[i], red)
             pygame.gfxdraw.filled_polygon(screen, list_custom[i], red)
@@ -124,11 +124,9 @@ while 1:
         list_custom.append(mouse_pos)
         mouse_pos = []
     keys = pygame.key.get_pressed()
-
     if keys[pygame.K_ESCAPE]:
         pygame.quit()
         sys.exit()
-
     if mouse_press():
         a = pygame.mouse.get_pos()
         if len(mouse_pos) == 0:

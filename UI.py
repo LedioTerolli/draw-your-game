@@ -17,12 +17,23 @@ blue = (0, 0, 255)
 clock = pygame.time.Clock()
 mouse_pos = []
 list_custom = []
+list_black = []
+list_other = []
+
 
 '''
-black_hole = makeSprite("blackhole.png")  # create the sprite object
-moveSprite(black_hole, 280, 0)  # move it into position. It is not visible yet
-showSprite(black_hole)
+for i in range(len(list_obj)):
+    if len(list_obj[i].coor) == 3:
+        list_black.append(makeSprite("blackhole.png"))
+        moveSprite(list_black[-1], list_obj[i].center[0], list_obj[i].center[1])
+        showSprite(list_black[-1])
+
+    else:
+        list_other.append(makeSprite("blackhole.png"))
+        moveSprite(list_other[-1], list_obj[i].center[0], list_obj[i].center[1])
+        showSprite(list_other[-1])
 '''
+
 
 while 1:
     speed = 10

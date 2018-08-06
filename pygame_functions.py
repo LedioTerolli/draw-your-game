@@ -11,6 +11,68 @@ hiddenSprites = pygame.sprite.OrderedUpdates()
 screenRefresh = True
 background = None
 
+
+def key_press(key_check=""):
+    pygame.event.clear()
+    keys = pygame.key.get_pressed()
+    if sum(keys) > 0:
+        if key_check == "" or keys[keydict[key_check.lower()]]:
+            return True
+    return False
+
+
+def mouse_press():
+    pygame.event.clear()
+    mouse_st = pygame.mouse.get_pressed()
+    if mouse_st[0]:
+        return True
+    else:
+        return False
+
+
+class Poly:
+    def __init__(self, screen, tup_coor, coor, area, peri, center, color):
+        self.screen = screen
+        self.tup_coor = tup_coor
+        self.coor = coor
+        self.area = area
+        self.peri = peri
+        self.center = center
+        self.color = color
+        pygame.gfxdraw.aapolygon(screen, self.tup_coor, self.color)
+        pygame.gfxdraw.filled_polygon(screen, self.tup_coor, self.color)
+
+
+def move(list_obj, rank, direction, speed):
+    if direction == 1:
+        list_obj[rank].coor[:, 0] -= speed
+        list_obj[rank].center[0] -= speed
+        xp = list_obj[rank].coor[:, 0]
+        yp = list_obj[rank].coor[:, 1]
+        list_obj[rank].tup_coor = list(zip(xp, yp))
+
+    if direction == 2:
+        list_obj[rank].coor[:, 0] += speed
+        list_obj[rank].center[0] += speed
+        xp = list_obj[rank].coor[:, 0]
+        yp = list_obj[rank].coor[:, 1]
+        list_obj[rank].tup_coor = list(zip(xp, yp))
+
+    if direction == 3:
+        list_obj[rank].coor[:, 1] -= speed
+        list_obj[rank].center[1] -= speed
+        xp = list_obj[rank].coor[:, 0]
+        yp = list_obj[rank].coor[:, 1]
+        list_obj[rank].tup_coor = list(zip(xp, yp))
+
+    if direction == 4:
+        list_obj[rank].coor[:, 1] += speed
+        list_obj[rank].center[1] += speed
+        xp = list_obj[rank].coor[:, 0]
+        yp = list_obj[rank].coor[:, 1]
+        list_obj[rank].tup_coor = list(zip(xp, yp))
+
+
 keydict = {"space": pygame.K_SPACE, "esc": pygame.K_ESCAPE, "up": pygame.K_UP, "down": pygame.K_DOWN,
            "left": pygame.K_LEFT, "right": pygame.K_RIGHT,
            "a": pygame.K_a,

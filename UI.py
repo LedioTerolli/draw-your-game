@@ -4,11 +4,11 @@ from process import get_data
 from pygame_functions import *
 import sys
 
-pygame.init()
-edge, new_img, list_obj = get_data("p12.jpg")
+screenSize(1920, 1080, True)
+
+edge, new_img, list_obj = get_data("images/p12.jpg")
 scX = new_img.shape[0]
 scY = new_img.shape[1]
-screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 pygame.display.update()
 purple = (74, 20, 140)
 white = (255, 255, 255)
@@ -21,25 +21,22 @@ list_black = []
 list_other = []
 
 
-'''
 for i in range(len(list_obj)):
     if len(list_obj[i].coor) == 3:
-        list_black.append(makeSprite("blackhole.png"))
+        list_black.append(makeSprite("images/blackhole.png"))
         moveSprite(list_black[-1], list_obj[i].center[0], list_obj[i].center[1])
         showSprite(list_black[-1])
 
     else:
-        list_other.append(makeSprite("blackhole.png"))
+        list_other.append(makeSprite("images/blackhole.png"))
         moveSprite(list_other[-1], list_obj[i].center[0], list_obj[i].center[1])
         showSprite(list_other[-1])
-'''
 
 
 while 1:
     speed = 10
     list_poly = []
     clock.tick(120)
-    screen.fill(purple)
 
     # draw photo polygons
     for i in range(len(list_obj)):

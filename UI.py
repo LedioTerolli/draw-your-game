@@ -4,9 +4,9 @@ from process import get_data
 from pygame_functions import *
 import sys
 
-screenSize(1920, 1080, True)
+screen = screenSize(1920, 1080, True)
 
-edge, new_img, list_obj = get_data("images/p12.jpg")
+edge, new_img, list_obj = get_data("images/p13.jpg")
 scX = new_img.shape[0]
 scY = new_img.shape[1]
 pygame.display.update()
@@ -23,20 +23,40 @@ list_other = []
 
 for i in range(len(list_obj)):
     if len(list_obj[i].coor) == 3:
-        list_black.append(makeSprite("images/blackhole.png"))
-        moveSprite(list_black[-1], list_obj[i].center[0], list_obj[i].center[1])
-        showSprite(list_black[-1])
+        sprite = makeSprite("images/planet2small.png")
+        sprite.move(list_obj[i].center[0], list_obj[i].center[1], True)
+        sprite.scale = 0.5
+        sprite.changeImage(0)
+        list_black.append(sprite)
+        showSprite(sprite)
+
+        # list_black.append(makeSprite("images/blackhole.png"))
+        # moveSprite(list_black[-1], list_obj[i].center[0], list_obj[i].center[1])
+        # list_black[-1].scale = 0.5
+        # list_black[-1].changeImage(0)
+        # showSprite(list_black[-1])
 
     else:
-        list_other.append(makeSprite("images/blackhole.png"))
-        moveSprite(list_other[-1], list_obj[i].center[0], list_obj[i].center[1])
-        showSprite(list_other[-1])
+        sprite = makeSprite("images/blackhole.png")
+        sprite.move(list_obj[i].center[0], list_obj[i].center[1], True)
+        sprite.scale = 1
+        sprite.changeImage(0)
+        list_other.append(sprite)
+        showSprite(sprite)
+
+        # list_other.append(makeSprite("images/planet2small.png"))
+        # moveSprite(list_other[-1], list_obj[i].center[0], list_obj[i].center[1])
+        # list_black[-1].scale = 1
+        # list_black[-1].changeImage(0)
+        # showSprite(list_other[-1])
 
 
 while 1:
     speed = 10
     list_poly = []
     clock.tick(120)
+
+
 
     # draw photo polygons
     for i in range(len(list_obj)):
@@ -86,4 +106,3 @@ while 1:
         if mouse_pos[-1] != a:
             mouse_pos.append(a)
 
-    pygame.display.update()

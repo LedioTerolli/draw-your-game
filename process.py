@@ -18,6 +18,9 @@ class Obj:
 
 # removing sides less than 10 px
 def shape_eval(list, tolerance):
+    if len(list) <= 3:
+        return list
+
     distance_list = []
 
     for i in range(len(list) - 1):
@@ -32,8 +35,23 @@ def shape_eval(list, tolerance):
     index_min = distance_list.index(min(distance_list))
     sorted_list = sorted(distance_list)
 
-    if sorted_list[0] < tolerance:
+    while sorted_list[0] < tolerance:
         list = np.delete(list, index_min, 0)
+
+        distance_list = []
+
+        for i in range(len(list) - 1):
+            distance = int(sqrt(
+                ((list.item((i, 0)) - list.item((i + 1, 0))) ** 2) + (
+                        (list.item((i, 1)) - list.item((i + 1, 1))) ** 2)))
+            distance_list.append(distance)
+
+        special_dis = int(sqrt(
+            ((list.item((0, 0)) - list.item((-1, 0))) ** 2) + ((list.item((0, 1)) - list.item((-1, 1))) ** 2)))
+        distance_list.append(special_dis)
+
+        index_min = distance_list.index(min(distance_list))
+        sorted_list = sorted(distance_list)
 
     return list
 
@@ -74,10 +92,11 @@ def get_data(image):
 
     for c in cnts:
         area = int(cv2.contourArea(c))
-        if area < 10000:
-            i = 0.04
+        if area < 1000:
+            i = 0.05
         else:
             i = 0.01
+
         if area > 100:
             perimeter = cv2.arcLength(c, True)
             perimeter = round(perimeter, 2)
@@ -85,13 +104,13 @@ def get_data(image):
             epsilon = i * cv2.arcLength(c, True)
             approx = cv2.approxPolyDP(c, epsilon, True)
             apr = np.vstack(approx).squeeze()
-
             apr = shape_eval(apr, 10)
 
             if len(apr) < 3:
                 continue
 
-            data = str(area) + "-" + str(len(apr))  # + "-" + str(perimeter)
+            # data = str(area) + "_" + str(len(apr))  # + "-" + str(perimeter)
+            data = str(area) + "_" + str(len(apr)) + "-" + str(total)
 
             M = cv2.moments(c)
             cX = int(M["m10"] / M["m00"])
@@ -110,6 +129,9 @@ def get_data(image):
                 apr[i, 0] = apr.item((i, 0)) * enlarge_rate_x
                 apr[i, 1] = apr.item((i, 1)) * enlarge_rate_y
 
+            center[0] = center[0] * enlarge_rate_x
+            center[1] = center[1] * enlarge_rate_y
+
             xp = apr[:, 0]
             yp = apr[:, 1]
             tup_coor = list(zip(xp, yp))
@@ -119,7 +141,8 @@ def get_data(image):
 
     return edge, img, list_obj
 
-# edge, new_img, list_poly = get_data("p12.jpg")
+
+# edge, new_img, list_poly = get_data("images/p13.jpg")
 # cv2.imshow("edge", edge)
 # cv2.imshow("final", new_img)
 # cv2.waitKey(0)

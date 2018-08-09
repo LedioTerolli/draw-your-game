@@ -34,11 +34,11 @@ n = 0
 
 for i in range(len(list_obj)):
     area = list_obj[i].area
-    if len(list_obj[i].coor) == 3:
+    if len(list_obj[i].coor) < 4:
 
-        if area > 2000:
+        if area > 4000:
             file = "images/planet3small.png"
-        elif area > 1500:
+        elif area > 1000:
             file = "images/planet1small.png"
         else:
             file = "images/planet2small.png"
@@ -48,8 +48,8 @@ for i in range(len(list_obj)):
         sprite.x = list_obj[i].center[0]
         sprite.y = list_obj[i].center[1]
         sprite.xspeed = 0
-        sprite.yspeed = (area / 100) * ((-1) ** random.randrange(0, 100))
-        sprite.scale = area / 1500
+        sprite.yspeed = (area/300) * ((-1) ** random.randrange(0, 100))
+        sprite.scale = area / (area + 1000)
         sprite.angle = 0
         sprite.rot = ((-1) ** random.randrange(0, 100))
         sprite.changeImage(0)
@@ -59,14 +59,14 @@ for i in range(len(list_obj)):
     else:
         sprite = makeSprite("images/blackhole.png")
         sprite.move(list_obj[i].center[0], list_obj[i].center[1], True)
-        sprite.scale = area / 2000
+        sprite.scale = area / 3000
         sprite.changeImage(0)
         sprite.rot = (-1) ** random.randrange(0, 100)
         black_list.append(sprite)
         showSprite(sprite)
 
 while 1:
-    tick(60)
+    tick(120)
 
     for i in aster_list:
         hide = int(i.originalWidth)

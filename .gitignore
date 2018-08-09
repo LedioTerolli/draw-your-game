@@ -16,6 +16,7 @@ p10.jpg
 p11.jpg
 p12.jpg
 test_rot.py
+draw_pygame.py
 
 __pycache__/
 *.py[cod]

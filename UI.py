@@ -1,5 +1,3 @@
-import pygame
-from pygame import gfxdraw
 from process import get_data
 from pygame_functions import *
 import random
@@ -7,34 +5,34 @@ import sys
 from win32api import GetSystemMetrics
 
 screen = screenSize(1920, 1080, True)
-
 screen_size_x = GetSystemMetrics(0)
 screen_size_y = GetSystemMetrics(1)
-
 edge, new_img, list_obj = get_data("images/p13.jpg")
 scX = new_img.shape[0]
 scY = new_img.shape[1]
-pygame.display.update()
-purple = (74, 20, 140)
-white = (255, 255, 255)
-red = (255, 23, 68)
-blue = (0, 0, 255)
-clock = pygame.time.Clock()
 mouse_pos = []
 list_custom = []
 aster_list = []
 static_list = []
 
 for i in range(len(list_obj)):
+    area = list_obj[i].area
+
     if len(list_obj[i].coor) == 3:
-        sprite = makeSprite("images/planet2small.png")
+
+        if area > 1000:
+            file = "images/planet1small.png"
+        else:
+            file = "images/planet2small.png"
+
+        sprite = makeSprite(file)
         sprite.move(list_obj[i].center[0], list_obj[i].center[1], True)
         sprite.x = list_obj[i].center[0]
         sprite.y = list_obj[i].center[1]
-        # sprite.xspeed = random.randint(-5, 5)
         sprite.xspeed = 0
-        sprite.yspeed = random.randint(-5, 5)
-        sprite.scale = 0.5
+        sprite.yspeed = (area / 200) * ((-1) ** random.randrange(0, 100))
+        sprite.scale = area / 2000
+        sprite.rot = random.randrange(0, 3000)
         sprite.changeImage(0)
         aster_list.append(sprite)
         showSprite(sprite)
@@ -42,101 +40,90 @@ for i in range(len(list_obj)):
     else:
         sprite = makeSprite("images/blackhole.png")
         sprite.move(list_obj[i].center[0], list_obj[i].center[1], True)
-        sprite.scale = 1
+        sprite.scale = area / 2000
+        sprite.rotation = 100
         sprite.changeImage(0)
         static_list.append(sprite)
         showSprite(sprite)
 
+xPos = 50
+yPos = screen_size_y / 2
+xSpeed = 0
+ySpeed = 0
+angle = 0
+thrustAmount = 0.5
+car = makeSprite("images/tesla_small.png")
+addSpriteImage(car, "images/tesla_small1.png")
+addSpriteImage(car, "images/tesla_small2.png")
+moveSprite(car, 50, screen_size_y / 2, True)
+showSprite(car)
+thrustFrame = 1
+nextframe = clock()
+
 while 1:
-    speed = 10
-    list_poly = []
-    clock.tick(120)
+    tick(60)
 
     for i in aster_list:
+        hide = int(i.originalWidth)
         i.x += i.xspeed
-        if i.x > screen_size_x:
-            i.x = 0
-        elif i.x < 0:
-            i.x = screen_size_x
+        if i.x > screen_size_x + hide:
+            i.x = -hide
+        elif i.x < -hide:
+            i.x = screen_size_x + hide
 
         i.y += i.yspeed
-        if i.y > screen_size_y:
-            i.y = 0
-        elif i.y < 0:
-            i.y = screen_size_y
+        if i.y > screen_size_y + hide:
+            i.y = -hide
+        elif i.y < -hide:
+            i.y = screen_size_y + hide
+        moveSprite(i, i.x, i.y, True)
 
-        moveSprite(i, i.x, i.y)
+    if keyPressed("left"):
+        angle = angle - 6
+        transformSprite(car, angle, 1)
+    elif keyPressed("right"):
+        angle = angle + 6
+        transformSprite(car, angle, 1)
 
-        # controls
-        if key_press("left"):
-            move(list_obj, 0, 1, speed)
-        elif key_press("right"):
-            move(list_obj, 0, 2, speed)
-        elif key_press("up"):
-            move(list_obj, 0, 3, speed)
-        elif key_press("down"):
-            move(list_obj, 0, 4, speed)
-        elif key_press("space"):
-            list_custom.append(mouse_pos)
-            mouse_pos = []
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_ESCAPE]:
-            pygame.quit()
-            sys.exit()
-        if mouse_press():
-            a = pygame.mouse.get_pos()
-            if len(mouse_pos) == 0:
-                mouse_pos.append(a)
-            if mouse_pos[-1] != a:
-                mouse_pos.append(a)
+    if keyPressed("up"):
+        if clock() > nextframe:
+            nextframe = clock() + 200
+            if thrustFrame == 1:
+                changeSpriteImage(car, 1)
+                thrustFrame = 2
+            else:
+                changeSpriteImage(car, 2)
+                thrustFrame = 1
+        xSpeed += math.sin(math.radians(angle)) * thrustAmount
+        ySpeed -= math.cos(math.radians(angle)) * thrustAmount
+    elif keyPressed("down"):
+        changeSpriteImage(car, 0)
+        if xSpeed > 0:
+            xSpeed -= 0.2
+        elif xSpeed <= 0:
+            xSpeed += 0.2
+        if ySpeed > 0:
+            ySpeed -= 0.2
+        elif ySpeed <= 0:
+            ySpeed += 0.2
+    else:
+        changeSpriteImage(car, 0)
 
-    '''
+    hide = int(car.originalWidth)
 
-    # draw photo polygons
-    for i in range(len(list_obj)):
-        list_poly.append(
-            Poly(screen, list_obj[i].tup_coor, list_obj[i].coor, list_obj[i].area, list_obj[i].peri, list_obj[i].center,
-                 red))
+    xPos += xSpeed
+    if xPos > screen_size_x + hide:
+        xPos = -hide
+    elif xPos < -hide:
+        xPos = screen_size_x
+    yPos += ySpeed
+    if yPos > screen_size_y:
+        yPos = -hide
+    elif yPos < -hide:
+        yPos = screen_size_y
+    moveSprite(car, xPos, yPos, True)
 
-    # draw mouse points
-    for i in mouse_pos:
-        pygame.gfxdraw.aacircle(screen, i[0], i[1], 2, white)
-        pygame.gfxdraw.filled_circle(screen, i[0], i[1], 2, white)
-
-    # draw mouse polygons
-    for i in range(len(list_custom)):
-        if len(list_custom[i]) == 0:
-            continue
-        elif len(list_custom[i]) == 1:
-            pygame.gfxdraw.aacircle(screen, (list_custom[i])[0][0], (list_custom[i])[0][1], 10, red)
-            pygame.gfxdraw.filled_circle(screen, (list_custom[i])[0][0], (list_custom[i])[0][1], 10, red)
-        elif len(list_custom[i]) == 2:
-            pygame.gfxdraw.line(screen, (list_custom[i])[0][0], (list_custom[i])[0][1], (list_custom[i])[1][0],
-                                (list_custom[i])[1][1], red)
-        else:
-            pygame.gfxdraw.aapolygon(screen, list_custom[i], red)
-            pygame.gfxdraw.filled_polygon(screen, list_custom[i], red)
-
-    # controls
-    if key_press("left"):
-        move(list_obj, 0, 1, speed)
-    elif key_press("right"):
-        move(list_obj, 0, 2, speed)
-    elif key_press("up"):
-        move(list_obj, 0, 3, speed)
-    elif key_press("down"):
-        move(list_obj, 0, 4, speed)
-    elif key_press("space"):
-        list_custom.append(mouse_pos)
-        mouse_pos = []
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]:
         pygame.quit()
         sys.exit()
-    if mouse_press():
-        a = pygame.mouse.get_pos()
-        if len(mouse_pos) == 0:
-            mouse_pos.append(a)
-        if mouse_pos[-1] != a:
-            mouse_pos.append(a)
-    '''

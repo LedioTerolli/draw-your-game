@@ -374,7 +374,6 @@ def moveSprite(sprite, x, y, centre=False):
 
 
 def rotateSprite(sprite, angle):
-    print("rotateSprite has been deprecated. Please use transformSprite")
     transformSprite(sprite, angle, 1)
 
 

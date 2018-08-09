@@ -136,13 +136,12 @@ def get_data(image):
             yp = apr[:, 1]
             tup_coor = list(zip(xp, yp))
             list_obj.append(Obj(tup_coor, apr, area, perimeter, center))
-            # print(len(apr))
             total += 1
 
     return edge, img, list_obj
 
 
-# edge, new_img, list_poly = get_data("images/p13.jpg")
+# edge, new_img, list_poly = get_data("images/p12.jpg")
 # cv2.imshow("edge", edge)
 # cv2.imshow("final", new_img)
 # cv2.waitKey(0)

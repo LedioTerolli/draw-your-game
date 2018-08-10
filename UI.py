@@ -68,6 +68,11 @@ for i in range(len(list_obj)):
         black_list.append(sprite)
         showSprite(sprite)
 
+fuel = (len(black_list) + len(aster_list)) * 10
+fuel_dis = makeLabel("Fuel:", 30, 10, 40, "white")
+changeLabel(fuel_dis, "Fuel: {0}".format(str(fuel)))
+showLabel(fuel_dis)
+
 while 1:
 
     tick(120)
@@ -96,6 +101,9 @@ while 1:
         transformSprite(car, angle, 1)
 
     if keyPressed("up"):
+        fuel -= 1
+        changeLabel(fuel_dis, "Fuel: {0}".format(str(fuel)))
+
         if clock() > nextframe:
             nextframe = clock() + 50
             if thrustFrame == 1:
@@ -104,8 +112,10 @@ while 1:
             else:
                 changeSpriteImage(car, 2)
                 thrustFrame = 1
-        xSpeed += math.sin(math.radians(angle)) * thrustAmount
-        ySpeed -= math.cos(math.radians(angle)) * thrustAmount
+
+        if fuel > 0:
+            xSpeed += math.sin(math.radians(angle)) * thrustAmount
+            ySpeed -= math.cos(math.radians(angle)) * thrustAmount
 
     elif keyPressed("down"):
         changeSpriteImage(car, 0)
@@ -160,7 +170,6 @@ while 1:
             if health > 0:
                 health -= 1
                 changeLabel(fpsDisplay, "Life: {0}".format(str(health)))
-                updateDisplay()
                 xSpeed = 0
                 ySpeed = 0
                 xPos = 50

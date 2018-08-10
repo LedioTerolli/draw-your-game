@@ -14,8 +14,8 @@ mouse_pos = []
 list_custom = []
 aster_list = []
 black_list = []
-
 angle_obj = 0
+
 car = makeSprite("images/tesla_small.png")
 addSpriteImage(car, "images/tesla_small1.png")
 addSpriteImage(car, "images/tesla_small2.png")
@@ -54,8 +54,6 @@ for i in range(len(list_obj)):
         sprite.xspeed = 0
         sprite.yspeed = (area / 300) * ((-1) ** random.randrange(0, 100))
         sprite.scale = area / (area + 1000)
-        sprite.angle = 0
-        sprite.rot = ((-1) ** random.randrange(0, 100))
         sprite.changeImage(0)
         aster_list.append(sprite)
         showSprite(sprite)
@@ -64,39 +62,24 @@ for i in range(len(list_obj)):
         sprite = makeSprite("images/blackhole.png")
         sprite.move(list_obj[i].center[0], list_obj[i].center[1], True)
         sprite.scale = area / 3000
-        sprite.rot = (-1) ** random.randrange(0, 100)
+        sprite.changeImage(0)
         black_list.append(sprite)
         showSprite(sprite)
 
-mars = makeSprite("images/mars_small.png")
-mars.move(screen_size_x, screen_size_y / 2, True)
-showSprite(mars)
+# mars = makeSprite("images/mars_small.png")
+# mars.move(screen_size_x, screen_size_y / 2, True)
+# showSprite(mars)
 
-calc_fuel = (len(black_list) + len(aster_list)) * 10
+calc_fuel = (len(black_list) + len(aster_list)) * 5
 car.fuel = calc_fuel
 fuel_dis = makeLabel("Fuel:", 30, 10, 40, "white")
 changeLabel(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
 showLabel(fuel_dis)
 
+fpsDisplay = makeLabel("FPS:", 30, 10, 70, "white")
+showLabel(fpsDisplay)
+
 while 1:
-
-    tick(120)
-
-    for i in aster_list:
-        hide = int(i.originalWidth)
-
-        i.x += i.xspeed
-        if i.x > screen_size_x + hide:
-            i.x = -hide
-        elif i.x < -hide:
-            i.x = screen_size_x + hide
-
-        i.y += i.yspeed
-        if i.y > screen_size_y + hide:
-            i.y = -hide
-        elif i.y < -hide:
-            i.y = screen_size_y + hide
-        moveSprite(i, i.x, i.y, True)
 
     if keyPressed("left"):
         car.angle = car.angle - 6
@@ -136,15 +119,29 @@ while 1:
     else:
         changeSpriteImage(car, 0)
         if car.xSpeed > 0:
-            car.xSpeed -= 0.01
+            car.xSpeed -= 0.001
         elif car.xSpeed <= 0:
-            car.xSpeed += 0.01
+            car.xSpeed += 0.001
         if car.ySpeed > 0:
-            car.ySpeed -= 0.01
+            car.ySpeed -= 0.001
         elif car.ySpeed <= 0:
-            car.ySpeed += 0.01
+            car.ySpeed += 0.001
 
-    hide = int(car.originalWidth)
+    for i in aster_list:
+        hide = int(i.originalWidth)
+
+        i.x += i.xspeed
+        if i.x > screen_size_x + hide:
+            i.x = -hide
+        elif i.x < -hide:
+            i.x = screen_size_x + hide
+
+        i.y += i.yspeed
+        if i.y > screen_size_y + hide:
+            i.y = -hide
+        elif i.y < -hide:
+            i.y = screen_size_y + hide
+        moveSprite(i, i.x, i.y, True)
 
 
     def restart(car):
@@ -160,17 +157,21 @@ while 1:
 
     def bounce_ver(car):
         car.xSpeed = (-1) * car.xSpeed
+        car.angle -= 90
 
 
     def bounce_hor(car):
         car.ySpeed = (-1) * car.ySpeed
 
 
+    hide = int(car.originalWidth)
+
     car.xPos += car.xSpeed
     if car.xPos > screen_size_x + hide:
         restart(car)
     elif car.xPos < -hide:
         bounce_ver(car)
+
     car.yPos += car.ySpeed
     if car.yPos > screen_size_y + hide:
         bounce_hor(car)
@@ -208,3 +209,6 @@ while 1:
                 i.yspeed = 0
                 car.xSpeed = 0
                 car.ySpeed = 0
+
+    fps = tick(60)
+    changeLabel(fpsDisplay, "FPS: {0}".format(str(round(fps, 2))))

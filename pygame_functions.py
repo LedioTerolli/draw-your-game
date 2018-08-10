@@ -638,7 +638,6 @@ def moveLabel(sprite, x, y):
 
 def changeLabel(textObject, newText, fontColour=None, background=None):
     textObject.update(newText, fontColour, background)
-    # updateDisplay()
 
 
 def waitPress():

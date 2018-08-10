@@ -614,15 +614,6 @@ def endWait():
     pygame.quit()
 
 
-def keyPressed(keyCheck=""):
-    global keydict
-    pygame.event.clear()
-    keys = pygame.key.get_pressed()
-    if sum(keys) > 0:
-        if keyCheck == "" or keys[keydict[keyCheck.lower()]]:
-            return True
-    return False
-
 
 def makeLabel(text, fontSize, xpos, ypos, fontColour='black', font='Arial', background="clear"):
     # make a text sprite

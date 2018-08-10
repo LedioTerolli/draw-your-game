@@ -15,22 +15,23 @@ list_custom = []
 aster_list = []
 black_list = []
 
-xPos = 50
-yPos = screen_size_y / 2
-xSpeed = 0
-ySpeed = 0
-angle = 0
-health = 3
 angle_obj = 0
-thrustAmount = 0.5
 car = makeSprite("images/tesla_small.png")
 addSpriteImage(car, "images/tesla_small1.png")
 addSpriteImage(car, "images/tesla_small2.png")
+car.health = 3
+car.xPos = 50
+car.xPos = 50
+car.yPos = screen_size_y / 2
+car.xSpeed = 0
+car.ySpeed = 0
+car.angle = 0
+car.thrustAmount = 0.5
 moveSprite(car, 50, screen_size_y / 2, True)
 showSprite(car)
-fpsDisplay = makeLabel("Life:", 30, 10, 10, "white")
-changeLabel(fpsDisplay, "Life: {0}".format(str(health)))
-showLabel(fpsDisplay)
+life = makeLabel("Life:", 30, 10, 10, "white")
+changeLabel(life, "Life: {0}".format(str(car.health)))
+showLabel(life)
 thrustFrame = 1
 nextframe = clock()
 n = 0
@@ -63,14 +64,18 @@ for i in range(len(list_obj)):
         sprite = makeSprite("images/blackhole.png")
         sprite.move(list_obj[i].center[0], list_obj[i].center[1], True)
         sprite.scale = area / 3000
-        sprite.changeImage(0)
         sprite.rot = (-1) ** random.randrange(0, 100)
         black_list.append(sprite)
         showSprite(sprite)
 
-fuel = (len(black_list) + len(aster_list)) * 10
+mars = makeSprite("images/mars_small.png")
+mars.move(screen_size_x, screen_size_y / 2, True)
+showSprite(mars)
+
+calc_fuel = (len(black_list) + len(aster_list)) * 10
+car.fuel = calc_fuel
 fuel_dis = makeLabel("Fuel:", 30, 10, 40, "white")
-changeLabel(fuel_dis, "Fuel: {0}".format(str(fuel)))
+changeLabel(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
 showLabel(fuel_dis)
 
 while 1:
@@ -94,63 +99,84 @@ while 1:
         moveSprite(i, i.x, i.y, True)
 
     if keyPressed("left"):
-        angle = angle - 6
-        transformSprite(car, angle, 1)
+        car.angle = car.angle - 6
+        transformSprite(car, car.angle, 1)
     elif keyPressed("right"):
-        angle = angle + 6
-        transformSprite(car, angle, 1)
+        car.angle = car.angle + 6
+        transformSprite(car, car.angle, 1)
 
     if keyPressed("up"):
-        fuel -= 1
-        changeLabel(fuel_dis, "Fuel: {0}".format(str(fuel)))
+        if car.fuel > 0:
+            car.fuel -= 1
+            changeLabel(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
 
-        if clock() > nextframe:
-            nextframe = clock() + 50
-            if thrustFrame == 1:
-                changeSpriteImage(car, 1)
-                thrustFrame = 2
-            else:
-                changeSpriteImage(car, 2)
-                thrustFrame = 1
+            if clock() > nextframe:
+                nextframe = clock() + 50
+                if thrustFrame == 1:
+                    changeSpriteImage(car, 1)
+                    thrustFrame = 2
+                else:
+                    changeSpriteImage(car, 2)
+                    thrustFrame = 1
 
-        if fuel > 0:
-            xSpeed += math.sin(math.radians(angle)) * thrustAmount
-            ySpeed -= math.cos(math.radians(angle)) * thrustAmount
+        if car.fuel > 0:
+            car.xSpeed += math.sin(math.radians(car.angle)) * car.thrustAmount
+            car.ySpeed -= math.cos(math.radians(car.angle)) * car.thrustAmount
 
     elif keyPressed("down"):
         changeSpriteImage(car, 0)
-        if xSpeed > 0:
-            xSpeed -= 0.2
-        elif xSpeed <= 0:
-            xSpeed += 0.2
-        if ySpeed > 0:
-            ySpeed -= 0.2
-        elif ySpeed <= 0:
-            ySpeed += 0.2
+        if car.xSpeed > 0:
+            car.xSpeed -= 0.2
+        elif car.xSpeed <= 0:
+            car.xSpeed += 0.2
+        if car.ySpeed > 0:
+            car.ySpeed -= 0.2
+        elif car.ySpeed <= 0:
+            car.ySpeed += 0.2
     else:
         changeSpriteImage(car, 0)
-        if xSpeed > 0:
-            xSpeed -= 0.01
-        elif xSpeed <= 0:
-            xSpeed += 0.01
-        if ySpeed > 0:
-            ySpeed -= 0.01
-        elif ySpeed <= 0:
-            ySpeed += 0.01
+        if car.xSpeed > 0:
+            car.xSpeed -= 0.01
+        elif car.xSpeed <= 0:
+            car.xSpeed += 0.01
+        if car.ySpeed > 0:
+            car.ySpeed -= 0.01
+        elif car.ySpeed <= 0:
+            car.ySpeed += 0.01
 
     hide = int(car.originalWidth)
 
-    xPos += xSpeed
-    if xPos > screen_size_x + hide:
-        xPos = -hide
-    elif xPos < -hide:
-        xPos = screen_size_x
-    yPos += ySpeed
-    if yPos > screen_size_y:
-        yPos = -hide
-    elif yPos < -hide:
-        yPos = screen_size_y
-    moveSprite(car, xPos, yPos, True)
+
+    def restart(car):
+        car.health -= 1
+        changeLabel(life, "Life: {0}".format(str(car.health)))
+        car.xSpeed = 0
+        car.ySpeed = 0
+        car.xPos = 50
+        car.yPos = screen_size_y / 2
+        car.fuel = calc_fuel
+        changeLabel(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
+
+
+    def bounce_ver(car):
+        car.xSpeed = (-1) * car.xSpeed
+
+
+    def bounce_hor(car):
+        car.ySpeed = (-1) * car.ySpeed
+
+
+    car.xPos += car.xSpeed
+    if car.xPos > screen_size_x + hide:
+        restart(car)
+    elif car.xPos < -hide:
+        bounce_ver(car)
+    car.yPos += car.ySpeed
+    if car.yPos > screen_size_y + hide:
+        bounce_hor(car)
+    elif car.yPos < -hide:
+        bounce_hor(car)
+    moveSprite(car, car.xPos, car.yPos, True)
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]:
@@ -165,18 +191,20 @@ while 1:
             rand = random.randrange(0, len(black_list))
             while rand == index:
                 rand = random.randrange(0, len(black_list))
-            xPos, yPos = black_list[rand].rect.topleft
-        else:
-            if health > 0:
-                health -= 1
-                changeLabel(fpsDisplay, "Life: {0}".format(str(health)))
-                xSpeed = 0
-                ySpeed = 0
-                xPos = 50
-                yPos = screen_size_y / 2
+            car.xPos, car.yPos = black_list[rand].rect.topleft
+        elif hit[-1] in aster_list:
+            if car.health > 1:
+                restart(car)
+
             else:
                 for i in aster_list:
                     i.xspeed = 0
                     i.yspeed = 0
-                    xSpeed = 0
-                    ySpeed = 0
+                    car.xSpeed = 0
+                    car.ySpeed = 0
+        else:
+            for i in aster_list:
+                i.xspeed = 0
+                i.yspeed = 0
+                car.xSpeed = 0
+                car.ySpeed = 0

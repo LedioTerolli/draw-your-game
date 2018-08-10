@@ -20,6 +20,7 @@ yPos = screen_size_y / 2
 xSpeed = 0
 ySpeed = 0
 angle = 0
+health = 3
 angle_obj = 0
 thrustAmount = 0.5
 car = makeSprite("images/tesla_small.png")
@@ -27,9 +28,11 @@ addSpriteImage(car, "images/tesla_small1.png")
 addSpriteImage(car, "images/tesla_small2.png")
 moveSprite(car, 50, screen_size_y / 2, True)
 showSprite(car)
+fpsDisplay = makeLabel("Life:", 30, 10, 10, "white")
+changeLabel(fpsDisplay, "Life: {0}".format(str(health)))
+showLabel(fpsDisplay)
 thrustFrame = 1
 nextframe = clock()
-
 n = 0
 
 for i in range(len(list_obj)):
@@ -48,7 +51,7 @@ for i in range(len(list_obj)):
         sprite.x = list_obj[i].center[0]
         sprite.y = list_obj[i].center[1]
         sprite.xspeed = 0
-        sprite.yspeed = (area/300) * ((-1) ** random.randrange(0, 100))
+        sprite.yspeed = (area / 300) * ((-1) ** random.randrange(0, 100))
         sprite.scale = area / (area + 1000)
         sprite.angle = 0
         sprite.rot = ((-1) ** random.randrange(0, 100))
@@ -66,6 +69,7 @@ for i in range(len(list_obj)):
         showSprite(sprite)
 
 while 1:
+
     tick(120)
 
     for i in aster_list:
@@ -83,11 +87,6 @@ while 1:
         elif i.y < -hide:
             i.y = screen_size_y + hide
         moveSprite(i, i.x, i.y, True)
-
-    '''for i in black_list:
-        angle_obj = angle_obj - i.rot
-        scale = i.scale
-        transformSprite(i, angle_obj, scale)'''
 
     if keyPressed("left"):
         angle = angle - 6
@@ -107,6 +106,7 @@ while 1:
                 thrustFrame = 1
         xSpeed += math.sin(math.radians(angle)) * thrustAmount
         ySpeed -= math.cos(math.radians(angle)) * thrustAmount
+
     elif keyPressed("down"):
         changeSpriteImage(car, 0)
         if xSpeed > 0:
@@ -119,6 +119,14 @@ while 1:
             ySpeed += 0.2
     else:
         changeSpriteImage(car, 0)
+        if xSpeed > 0:
+            xSpeed -= 0.01
+        elif xSpeed <= 0:
+            xSpeed += 0.01
+        if ySpeed > 0:
+            ySpeed -= 0.01
+        elif ySpeed <= 0:
+            ySpeed += 0.01
 
     hide = int(car.originalWidth)
 
@@ -138,3 +146,28 @@ while 1:
     if keys[pygame.K_ESCAPE]:
         pygame.quit()
         sys.exit()
+
+    hit = allTouching(car)
+
+    if len(hit) > 0:
+        if hit[-1] in black_list:
+            index = black_list.index(hit[-1])
+            rand = random.randrange(0, len(black_list))
+            while rand == index:
+                rand = random.randrange(0, len(black_list))
+            xPos, yPos = black_list[rand].rect.topleft
+        else:
+            if health > 0:
+                health -= 1
+                changeLabel(fpsDisplay, "Life: {0}".format(str(health)))
+                updateDisplay()
+                xSpeed = 0
+                ySpeed = 0
+                xPos = 50
+                yPos = screen_size_y / 2
+            else:
+                for i in aster_list:
+                    i.xspeed = 0
+                    i.yspeed = 0
+                    xSpeed = 0
+                    ySpeed = 0

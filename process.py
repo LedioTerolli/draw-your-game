@@ -141,7 +141,7 @@ def get_data(image):
     return edge, img, list_obj
 
 
-edge, new_img, list_poly = get_data("images/p12.jpg")
-cv2.imshow("edge", edge)
-cv2.imshow("final", new_img)
-cv2.waitKey(0)
+# edge, new_img, list_poly = get_data("images/p12.jpg")
+# cv2.imshow("edge", edge)
+# cv2.imshow("final", new_img)
+# cv2.waitKey(0)

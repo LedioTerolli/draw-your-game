@@ -7,7 +7,7 @@ import sys
 screen = screenSize(1920, 1080, True)
 screen_size_x = GetSystemMetrics(0)
 screen_size_y = GetSystemMetrics(1)
-edge, new_img, list_obj = get_data("images/p14.jpg")
+edge, new_img, list_obj = get_data("images/p15.jpg")
 scX = new_img.shape[0]
 scY = new_img.shape[1]
 aster_list = []
@@ -97,6 +97,7 @@ while 1:
                     first_time = 0
             else:
                 if time_pass < clock():
+                    first_time = 0
                     hideAll()
 
     if key_press("r"):

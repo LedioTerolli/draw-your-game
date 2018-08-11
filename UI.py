@@ -1,8 +1,8 @@
-from process import get_data
+from win32api import GetSystemMetrics
 from pygame_functions import *
+from process import get_data
 import random
 import sys
-from win32api import GetSystemMetrics
 
 screen = screenSize(1920, 1080, True)
 screen_size_x = GetSystemMetrics(0)
@@ -10,11 +10,46 @@ screen_size_y = GetSystemMetrics(1)
 edge, new_img, list_obj = get_data("images/p12.jpg")
 scX = new_img.shape[0]
 scY = new_img.shape[1]
-mouse_pos = []
-list_custom = []
 aster_list = []
 black_list = []
-angle_obj = 0
+
+for i in range(len(list_obj)):
+    area = list_obj[i].area
+    if len(list_obj[i].coor) < 4:
+
+        if area > 4000:
+            file = "images/planet3_100_5.png"
+        elif area > 1000:
+            file = "images/planet1_75_7.png"
+        else:
+            file = "images/planet2_50_5.png"
+
+        stripe = makeSprite("images/stripe_1080_1_dashed.png")
+        stripe.move(list_obj[i].center[0], screen_size_y/2, True)
+        # stripe.move(list_obj[i].center[0], list_obj[i].center[1], True)
+        showSprite(stripe)
+
+        sprite = makeSprite(file)
+        sprite.move(list_obj[i].center[0], list_obj[i].center[1], True)
+        sprite.x = list_obj[i].center[0]
+        sprite.y = list_obj[i].center[1]
+        sprite.xspeed = 0
+        sprite.yspeed = (area / 250) * ((-1) ** random.randrange(0, 100))
+        sprite.changeImage(0)
+        aster_list.append(sprite)
+        showSprite(sprite)
+
+    else:
+        sprite = makeSprite("images/blackhole_50_10.png")
+        sprite.move(list_obj[i].center[0], list_obj[i].center[1], True)
+        sprite.changeImage(0)
+        black_list.append(sprite)
+        showSprite(sprite)
+
+
+mars = makeSprite("images/mars_100_5.png")
+mars.move(screen_size_x, screen_size_y / 2, True)
+showSprite(mars)
 
 car = makeSprite("images/tesla_base.png")
 addSpriteImage(car, "images/tesla_small1.png")
@@ -26,7 +61,7 @@ car.yPos = screen_size_y / 2
 car.xSpeed = 0
 car.ySpeed = 0
 car.angle = 0
-car.thrustAmount = 0.5
+car.thrustAmount = 0.7
 moveSprite(car, 50, screen_size_y / 2, True)
 showSprite(car)
 
@@ -36,41 +71,7 @@ showLabel(life)
 thrustFrame = 1
 nextframe = clock()
 
-for i in range(len(list_obj)):
-    area = list_obj[i].area
-    if len(list_obj[i].coor) < 4:
-
-        if area > 4000:
-            file = "images/planet3_100_50.png"
-        elif area > 1000:
-            file = "images/planet1_100_50.png"
-        else:
-            file = "images/planet2_100_50.png"
-
-        sprite = makeSprite(file)
-        sprite.move(list_obj[i].center[0], list_obj[i].center[1], True)
-        sprite.x = list_obj[i].center[0]
-        sprite.y = list_obj[i].center[1]
-        sprite.xspeed = 0
-        sprite.yspeed = (area / 600) * ((-1) ** random.randrange(0, 100))
-        # sprite.scale = area / (area + 1000)
-        sprite.changeImage(0)
-        aster_list.append(sprite)
-        showSprite(sprite)
-
-    else:
-        sprite = makeSprite("images/blackhole_50_50.png")
-        sprite.move(list_obj[i].center[0], list_obj[i].center[1], True)
-        # sprite.scale = area / 1000
-        sprite.changeImage(0)
-        black_list.append(sprite)
-        showSprite(sprite)
-
-mars = makeSprite("images/mars_small.png")
-mars.move(screen_size_x, screen_size_y / 2, True)
-showSprite(mars)
-
-calc_fuel = (len(black_list) + len(aster_list)) * 5
+calc_fuel = (len(black_list) + len(aster_list)) * 3
 car.fuel = calc_fuel
 fuel_dis = makeLabel("Fuel:", 30, 10, 40, "white")
 changeLabel(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
@@ -79,9 +80,29 @@ showLabel(fuel_dis)
 fpsDisplay = makeLabel("FPS:", 30, 10, 70, "white")
 showLabel(fpsDisplay)
 
-slow_down_rate = 0.3
+time_pass = clock()
+slow_down_rate = 0.1
+first_time = 0
+first_time_bh = 0
 
 while 1:
+
+    if car.fuel <= 0:
+        if first_time == 0:
+            time_pass = clock() + 6000
+            first_time += 1
+        else:
+            if time_pass < clock():
+                restart(car)
+                first_time = 0
+
+    if key_press("r"):
+        car.xSpeed = 0
+        car.ySpeed = 0
+        car.xPos = 50
+        car.yPos = screen_size_y / 2
+
+
     if key_press("left"):
         car.angle = car.angle - 6
         transformSprite(car, car.angle, 1)
@@ -106,7 +127,9 @@ while 1:
         if car.fuel > 0:
             car.xSpeed += math.sin(math.radians(car.angle)) * car.thrustAmount
             car.ySpeed -= math.cos(math.radians(car.angle)) * car.thrustAmount
+
     elif key_press("down"):
+        # slow down
         changeSpriteImage(car, 0)
         if car.xSpeed > 0:
             car.xSpeed -= slow_down_rate
@@ -117,8 +140,8 @@ while 1:
         elif car.ySpeed <= 0:
             car.ySpeed += slow_down_rate
     else:
+        # auto slow down
         changeSpriteImage(car, 0)
-        ''' auto slow down 
         if car.xSpeed > 0:
             car.xSpeed -= 0.001
         elif car.xSpeed <= 0:
@@ -126,7 +149,7 @@ while 1:
         if car.ySpeed > 0:
             car.ySpeed -= 0.001
         elif car.ySpeed <= 0:
-            car.ySpeed += 0.001'''
+            car.ySpeed += 0.001
 
     for i in aster_list:
         hide = int(i.originalWidth)
@@ -171,13 +194,15 @@ while 1:
     def bounce_hor(car):
         car.ySpeed = (-1) * car.ySpeed
 
-
-    hide = int(car.originalWidth)
-    hide = 50
+    # hide = int(car.originalWidth)
+    hide = 20
 
     car.xPos += car.xSpeed
     if car.xPos > screen_size_x + hide:
-        restart(car)
+        if car.health > 1:
+            restart(car)
+        else:
+            hideAll()
     elif car.xPos < -hide:
         bounce_ver(car)
 
@@ -196,26 +221,23 @@ while 1:
     hit = allTouching(car)
 
     if len(hit) > 0:
-        rand = len(black_list) - 1
         if hit[-1] in black_list:
-            if hit[-1] == black_list[rand]:
-                print("ignore")
-            else:
-
+            if first_time_bh == 0:
+                rand = len(black_list) - 1
+            if hit[-1] != black_list[rand]:
                 index = black_list.index(hit[-1])
                 rand = random.randrange(0, len(black_list))
                 while rand == index:
                     rand = random.randrange(0, len(black_list))
                 car.xPos, car.yPos = black_list[rand].rect.center
+                first_time_bh += 1
         elif hit[-1] in aster_list:
             if car.health > 1:
                 restart(car)
             else:
-                end(car)
                 hideAll()
         else:
-            end(car)
             hideAll()
 
-    fps = tick(120)
+    fps = tick(60)
     changeLabel(fpsDisplay, "FPS: {0}".format(str(round(fps, 2))))

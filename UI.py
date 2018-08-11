@@ -7,7 +7,7 @@ import sys
 screen = screenSize(1920, 1080, True)
 screen_size_x = GetSystemMetrics(0)
 screen_size_y = GetSystemMetrics(1)
-edge, new_img, list_obj = get_data("images/p12.jpg")
+edge, new_img, list_obj = get_data("images/p14.jpg")
 scX = new_img.shape[0]
 scY = new_img.shape[1]
 aster_list = []
@@ -17,7 +17,7 @@ for i in range(len(list_obj)):
     area = list_obj[i].area
     if len(list_obj[i].coor) < 4:
 
-        if area > 4000:
+        if area > 2000:
             file = "images/planet3_100_5.png"
         elif area > 1000:
             file = "images/planet1_75_7.png"
@@ -55,14 +55,13 @@ car = makeSprite("images/tesla_base.png")
 addSpriteImage(car, "images/tesla_small1.png")
 addSpriteImage(car, "images/tesla_small2.png")
 car.health = 3
-car.xPos = 50
-car.xPos = 50
+car.xPos = 20
 car.yPos = screen_size_y / 2
 car.xSpeed = 0
 car.ySpeed = 0
 car.angle = 0
-car.thrustAmount = 0.7
-moveSprite(car, 50, screen_size_y / 2, True)
+car.thrustAmount = 0.5
+moveSprite(car, car.xPos, car.yPos, True)
 showSprite(car)
 
 life = makeLabel("Life:", 30, 10, 10, "white")
@@ -71,7 +70,7 @@ showLabel(life)
 thrustFrame = 1
 nextframe = clock()
 
-calc_fuel = (len(black_list) + len(aster_list)) * 3
+calc_fuel = (len(black_list) + len(aster_list)) * 2
 car.fuel = calc_fuel
 fuel_dis = makeLabel("Fuel:", 30, 10, 40, "white")
 changeLabel(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
@@ -92,9 +91,13 @@ while 1:
             time_pass = clock() + 6000
             first_time += 1
         else:
-            if time_pass < clock():
-                restart(car)
-                first_time = 0
+            if car.health > 1:
+                if time_pass < clock():
+                    restart(car)
+                    first_time = 0
+            else:
+                if time_pass < clock():
+                    hideAll()
 
     if key_press("r"):
         car.xSpeed = 0

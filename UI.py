@@ -7,6 +7,7 @@ import sys
 
 def main():
     screen = screenSize(1920, 1080, True)
+    setBackgroundImage("images/bg_max.jpg")
     screen_size_x = GetSystemMetrics(0)
     screen_size_y = GetSystemMetrics(1)
     edge, new_img, list_obj = get_data("images/p15.jpg")
@@ -71,7 +72,7 @@ def main():
     thrustFrame = 1
     nextframe = clock()
 
-    calc_fuel = (len(black_list) + len(aster_list)) * 5
+    calc_fuel = (len(black_list) + len(aster_list)) * 3
     car.fuel = calc_fuel
     fuel_dis = makeLabel("Fuel:", 30, 10, 40, "white")
     changeLabel(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
@@ -96,6 +97,7 @@ def main():
                     if time_pass < clock():
                         restart(car)
                         first_time = 0
+                        first_time_bh = 0
                 else:
                     if time_pass < clock():
                         first_time = 0
@@ -241,6 +243,7 @@ def main():
             elif hit[-1] in aster_list:
                 if car.health > 1:
                     restart(car)
+                    first_time_bh = 0
                 else:
                     restart_game()
             else:

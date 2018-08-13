@@ -12,7 +12,7 @@ Takes an image as input, detects triangles and circles using OpenCV, and creates
 + Down = Slow Down
 
 ![](https://raw.githubusercontent.com/LedioTerolli/DrawToMars/master/gif_starter_1.gif)
-![](https://raw.githubusercontent.com/LedioTerolli/DrawToMars/master/images/gif_example.gif)
+![](https://raw.githubusercontent.com/LedioTerolli/DrawToMars/master/example.gif)
 
 ### License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details

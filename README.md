@@ -6,5 +6,6 @@ Takes an image as input, detects triangles and circles using OpenCV, and creates
 
 ![](https://raw.githubusercontent.com/LedioTerolli/DrawToMars/master/images/in_out.jpg)
 ![](https://raw.githubusercontent.com/LedioTerolli/DrawToMars/master/images/first_frame.png)
+
 ### License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details

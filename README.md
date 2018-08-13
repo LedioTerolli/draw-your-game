@@ -3,6 +3,8 @@ Takes an image as input, detects triangles and circles using OpenCV, and creates
 ## How it works:
 ⋅⋅* Triangles turn into asteroids and planets. The size of the shape determines the size and speed of the in-game object. They damage the car. 
 ⋅⋅* Circles turn into wormholes. They can teleport the car to different wormholes randomly.
+⋅⋅* Unordered sub-list. 
+
 ![](https://raw.githubusercontent.com/LedioTerolli/DrawToMars/master/images/in_out.jpg)
 ![](https://raw.githubusercontent.com/LedioTerolli/DrawToMars/master/images/first_frame.png)
 ### License

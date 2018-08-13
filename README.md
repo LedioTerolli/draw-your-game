@@ -11,8 +11,7 @@ Takes an image as input, detects triangles and circles using OpenCV, and creates
 + Left, Right = Direction
 + Down = Slow Down
 
-![](https://raw.githubusercontent.com/LedioTerolli/DrawToMars/master/images/in_out.jpg)
-![](https://raw.githubusercontent.com/LedioTerolli/DrawToMars/master/images/first_frame.png)
+![](https://raw.githubusercontent.com/LedioTerolli/DrawToMars/master/gif_starter_1.gif)
 ![](https://raw.githubusercontent.com/LedioTerolli/DrawToMars/master/images/gif_example.gif)
 
 ### License

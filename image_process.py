@@ -116,8 +116,8 @@ def get_data(image):
             center = [cX, cY]
 
             cv2.drawContours(img, [approx], 0, (0, 255, 0), 2)
-            cv2.rectangle(img, (cX + 5, cY - 20), (cX + 20 * len(data), cY - 5), (255, 255, 255), -1)
-            cv2.putText(img, data, (cX + 5, cY - 7), cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 0.5, (0, 0, 0), 2)
+            # cv2.rectangle(img, (cX + 5, cY - 20), (cX + 20 * len(data), cY - 5), (255, 255, 255), -1)
+            # cv2.putText(img, data, (cX + 5, cY - 7), cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 0.5, (0, 0, 0), 2)
             cv2.circle(img, (cX, cY), 3, (0, 0, 255), -1)
 
             enlarge_rate_x = screen_size_x * 1.0 / max(img.shape[0], img.shape[1])

@@ -108,8 +108,7 @@ def get_data(image):
             if len(apr) < 3:
                 continue
 
-            # data = str(area) + "_" + str(len(apr))  # + "-" + str(perimeter)
-            data = str(area) + "_" + str(len(apr)) + "-" + str(total)
+            data = str(len(apr))
 
             M = cv2.moments(c)
             cX = int(M["m10"] / M["m00"])
@@ -117,7 +116,7 @@ def get_data(image):
             center = [cX, cY]
 
             cv2.drawContours(img, [approx], 0, (0, 255, 0), 2)
-            cv2.rectangle(img, (cX + 5, cY - 20), (cX + 11 * len(data), cY - 5), (255, 255, 255), -1)
+            cv2.rectangle(img, (cX + 5, cY - 20), (cX + 20 * len(data), cY - 5), (255, 255, 255), -1)
             cv2.putText(img, data, (cX + 5, cY - 7), cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 0.5, (0, 0, 0), 2)
             cv2.circle(img, (cX, cY), 3, (0, 0, 255), -1)
 
@@ -138,7 +137,6 @@ def get_data(image):
             total += 1
 
     return edge, img, list_obj
-
 
 # edge, new_img, list_poly = get_data("images/p15.jpg")
 # cv2.imshow("edge", edge)

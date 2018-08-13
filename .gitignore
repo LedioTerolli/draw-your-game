@@ -11,10 +11,10 @@ edge.py
 findConTut.py
 four_point.py
 liveFeedTest.py
-p9.jpg
-p10.jpg
-p11.jpg
-p12.jpg
+images/p9.jpg
+images/p10.jpg
+images/p11.jpg
+images/p12.jpg
 test_rot.py
 draw_pygame.py
 

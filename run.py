@@ -1,8 +1,9 @@
 from win32api import GetSystemMetrics
 from pygame_functions import *
-from process import get_data
+from image_process import get_data
 import random
 import sys
+import cv2
 
 
 def main():
@@ -11,8 +12,7 @@ def main():
     screen_size_x = GetSystemMetrics(0)
     screen_size_y = GetSystemMetrics(1)
     edge, new_img, list_obj = get_data("images/p15.jpg")
-    sc_x = new_img.shape[0]
-    sc_y = new_img.shape[1]
+    cv2.imwrite("detection_output.jpg", new_img)
     aster_list = []
     black_list = []
 

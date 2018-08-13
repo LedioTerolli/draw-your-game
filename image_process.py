@@ -1,9 +1,8 @@
-import cv2
-import numpy as np
-import imutils
 from win32api import GetSystemMetrics
 from math import sqrt
-from matplotlib import pyplot as plt
+import numpy as np
+import imutils
+import cv2
 
 
 class Obj:

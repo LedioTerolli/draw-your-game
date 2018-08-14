@@ -11,7 +11,7 @@ def main():
     setBackgroundImage("images/bg_max.jpg")
     screen_size_x = GetSystemMetrics(0)
     screen_size_y = GetSystemMetrics(1)
-    edge, new_img, list_obj = get_data("images/p16.jpg")
+    edge, new_img, list_obj = get_data("images/p15.jpg")
     cv2.imwrite("images/detection_output.jpg", new_img)
     aster_list = []
     black_list = []
@@ -19,29 +19,25 @@ def main():
     for i in range(len(list_obj)):
         area = list_obj[i].area
         if len(list_obj[i].coor) < 4:
-
             if area > 2000:
                 file = "images/planet3_100_1.png"
             elif area > 1000:
                 file = "images/planet1_75_1.png"
             else:
-                file = "images/planet2_50_1.png"
+                file = "images/aster_50_1.png"
 
             stripe = make_sprite("images/stripe_1080_1_dashed.png")
             stripe.move(list_obj[i].center[0], screen_size_y / 2, True)
-            # stripe.move(list_obj[i].center[0], list_obj[i].center[1], True)
-            # show_sprite(stripe)
 
             sprite = make_sprite(file)
             sprite.move(list_obj[i].center[0], list_obj[i].center[1], True)
             sprite.x = list_obj[i].center[0]
             sprite.y = list_obj[i].center[1]
             sprite.xspeed = 0
-            sprite.yspeed = (area / 200) * ((-1) ** random.randrange(0, 100))
+            sprite.yspeed = (area / 300) * ((-1) ** random.randrange(0, 100))
             sprite.changeImage(0)
             aster_list.append(sprite)
             show_sprite(sprite)
-
         else:
             sprite = make_sprite("images/wormhole_50_1.png")
             sprite.move(list_obj[i].center[0], list_obj[i].center[1], True)
@@ -104,7 +100,7 @@ def main():
 
         if car.fuel <= 0:
             if first_time == 0:
-                time_pass = clock() + 6000
+                time_pass = clock() + 3000
                 first_time += 1
             else:
                 if car.health > 1:
@@ -136,7 +132,7 @@ def main():
         elif key_press("right"):
             car.angle_speed += car.angle_change
 
-        elif key_press("up"):
+        if key_press("up"):
             if car.fuel > 0:
                 car.fuel -= 1
                 change_label(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
@@ -171,15 +167,14 @@ def main():
                 car.ySpeed -= car.slow_down * abs(car.ySpeed)
             elif car.ySpeed <= 0:
                 car.ySpeed += car.slow_down * abs(car.ySpeed)
-
             # angle speed slow down
             if car.angle_speed != 0:
                 if car.angle_speed >= 0:
                     car.angle_speed -= car.angle_speed_slow_down * abs(car.angle_speed)
                 else:
                     car.angle_speed += car.angle_speed_slow_down * abs(car.angle_speed)
-        else:
-            # auto slow down
+        elif not (key_press("left") or key_press("right")):
+            # slow down auto
             changeSpriteImage(car, 0)
             if car.xSpeed > 0:
                 car.xSpeed -= car.slow_down_auto * abs(car.xSpeed)
@@ -189,15 +184,13 @@ def main():
                 car.ySpeed -= car.slow_down_auto * abs(car.ySpeed)
             elif car.ySpeed <= 0:
                 car.ySpeed += car.slow_down_auto * abs(car.ySpeed)
-
-            # auto angle slow down
+            # angle speed slow down auto
             if car.angle_speed > 0:
                 car.angle_speed -= car.angle_speed_slow_down_auto * abs(car.angle_speed)
             else:
                 car.angle_speed += car.angle_speed_slow_down_auto * abs(car.angle_speed)
 
         hide = 20
-
         # car speed limit
         if car.xSpeed > car.speed_lim:
             car.xSpeed = car.speed_lim
@@ -224,7 +217,7 @@ def main():
             bounce_hor(car)
         move_sprite(car, car.xPos, car.yPos, True)
 
-        # angle speed limit and update angle
+        # update angle & angle speed limit
         if car.angle_speed > car.angle_speed_lim:
             car.angle_speed = car.angle_speed_lim
         elif car.angle_speed < -car.angle_speed_lim:

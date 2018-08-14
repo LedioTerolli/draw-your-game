@@ -65,7 +65,7 @@ def main():
     car.angle_speed = 0
     car.angle_sp_lim = 20
     car.speed_lim = 30
-    car.thrustAmount = 0.8
+    car.thrustAmount = 0.7
     moveSprite(car, car.xPos, car.yPos, True)
     showSprite(car)
 
@@ -85,7 +85,9 @@ def main():
     showLabel(fpsDisplay)
 
     time_pass = clock()
-    slow_down_rate = 0.1
+    slow_down_rate = 0.05
+    auto_slow_down = 0.001
+    angle_speed_slow_down = 0.1
     first_time = 0
     first_time_bh = 0
 
@@ -129,7 +131,6 @@ def main():
             if car.fuel > 0:
                 car.fuel -= 1
                 changeLabel(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
-
                 if clock() > nextframe:
                     nextframe = clock() + 50
                     if thrustFrame == 1:
@@ -138,7 +139,6 @@ def main():
                     else:
                         changeSpriteImage(car, 2)
                         thrustFrame = 1
-
             else:
                 changeSpriteImage(car, 0)
 
@@ -151,35 +151,35 @@ def main():
                     car.angle_speed -= 0.1
                 else:
                     car.angle_speed += 0.1
-
         elif key_press("down"):
             # slow down
             changeSpriteImage(car, 0)
             if car.xSpeed > 0:
-                car.xSpeed -= slow_down_rate
+                car.xSpeed -= slow_down_rate * abs(car.xSpeed)
             elif car.xSpeed <= 0:
-                car.xSpeed += slow_down_rate
+                car.xSpeed += slow_down_rate * abs(car.xSpeed)
             if car.ySpeed > 0:
-                car.ySpeed -= slow_down_rate
+                car.ySpeed -= slow_down_rate * abs(car.ySpeed)
             elif car.ySpeed <= 0:
-                car.ySpeed += slow_down_rate
+                car.ySpeed += slow_down_rate * abs(car.ySpeed)
 
+            # angle speed slow down
             if car.angle_speed != 0:
                 if car.angle_speed >= 0:
-                    car.angle_speed -= 0.1
+                    car.angle_speed -= angle_speed_slow_down * abs(car.angle_speed)
                 else:
-                    car.angle_speed += 0.1
+                    car.angle_speed += angle_speed_slow_down * abs(car.angle_speed)
         else:
             # auto slow down
             changeSpriteImage(car, 0)
             if car.xSpeed > 0:
-                car.xSpeed -= 0.001
+                car.xSpeed -= auto_slow_down * abs(car.xSpeed)
             elif car.xSpeed <= 0:
-                car.xSpeed += 0.001
+                car.xSpeed += auto_slow_down * abs(car.xSpeed)
             if car.ySpeed > 0:
-                car.ySpeed -= 0.001
+                car.ySpeed -= auto_slow_down * abs(car.ySpeed)
             elif car.ySpeed <= 0:
-                car.ySpeed += 0.001
+                car.ySpeed += auto_slow_down * abs(car.ySpeed)
 
         # auto angle slow down
         if car.angle_speed > 0:
@@ -267,6 +267,7 @@ def main():
 
         hit = allTouching(car)
 
+        # wormhole algorithm
         if len(hit) > 0:
             if hit[-1] in black_list:
                 if first_time_bh == 0:
@@ -288,7 +289,8 @@ def main():
                 restart_game()
 
         fps = tick(60)
-        changeLabel(fpsDisplay, "FPS: {0}".format(str(round(fps, 2))))
+        changeLabel(fpsDisplay, "FPS: {0}".format(str(round(fps))))
+        # changeLabel(fpsDisplay, "FPS: {0}".format(str(round(fps, 2))))
 
 
 main()

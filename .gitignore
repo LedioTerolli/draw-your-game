@@ -39,6 +39,8 @@ images/blackhole.aep_Logs
 images/blackhole
 images/bg.psd
 
+images/untracked/
+
 __pycache__/
 *.py[cod]
 

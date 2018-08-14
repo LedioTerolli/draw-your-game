@@ -62,6 +62,7 @@ def main():
     car.xSpeed = 0
     car.ySpeed = 0
     car.angle = 0
+    car.angle_speed = 0
     car.thrustAmount = 0.5
     moveSprite(car, car.xPos, car.yPos, True)
     showSprite(car)
@@ -108,13 +109,14 @@ def main():
             car.ySpeed = 0
             car.xPos = 50
             car.yPos = screen_size_y / 2
+            car.angle_speed = 0
+            car.angle = 0
+            transformSprite(car, car.angle, 1)
 
         if key_press("left"):
-            car.angle = car.angle - 6
-            transformSprite(car, car.angle, 1)
+            car.angle_speed -= 0.3
         elif key_press("right"):
-            car.angle = car.angle + 6
-            transformSprite(car, car.angle, 1)
+            car.angle_speed += 0.3
 
         if key_press("up"):
             if car.fuel > 0:
@@ -130,9 +132,18 @@ def main():
                         changeSpriteImage(car, 2)
                         thrustFrame = 1
 
+            else:
+                changeSpriteImage(car, 0)
+
             if car.fuel > 0:
                 car.xSpeed += math.sin(math.radians(car.angle)) * car.thrustAmount
                 car.ySpeed -= math.cos(math.radians(car.angle)) * car.thrustAmount
+
+            if car.angle_speed != 0:
+                if car.angle_speed >= 0:
+                    car.angle_speed -= 0.1
+                else:
+                    car.angle_speed += 0.1
 
         elif key_press("down"):
             # slow down
@@ -145,6 +156,12 @@ def main():
                 car.ySpeed -= slow_down_rate
             elif car.ySpeed <= 0:
                 car.ySpeed += slow_down_rate
+
+            if car.angle_speed != 0:
+                if car.angle_speed >= 0:
+                    car.angle_speed -= 0.1
+                else:
+                    car.angle_speed += 0.1
         else:
             # auto slow down
             changeSpriteImage(car, 0)
@@ -156,6 +173,37 @@ def main():
                 car.ySpeed -= 0.001
             elif car.ySpeed <= 0:
                 car.ySpeed += 0.001
+
+        # auto angle slow down
+        if car.angle_speed != 0:
+            if car.angle_speed >= 0:
+                car.angle_speed -= 0.01
+            else:
+                car.angle_speed += 0.01
+
+        # hide = int(car.originalWidth)
+        hide = 20
+
+        car.xPos += car.xSpeed
+        if car.xPos > screen_size_x + hide:
+            if car.health > 1:
+                bounce_ver(car)
+                # restart(car)
+            else:
+                bounce_ver(car)
+                # restart_game()
+        elif car.xPos < -hide:
+            bounce_ver(car)
+
+        car.yPos += car.ySpeed
+        if car.yPos > screen_size_y + hide:
+            bounce_hor(car)
+        elif car.yPos < -hide:
+            bounce_hor(car)
+
+        moveSprite(car, car.xPos, car.yPos, True)
+        car.angle += car.angle_speed
+        transformSprite(car, car.angle, 1)
 
         for i in aster_list:
             hide = int(i.originalWidth)
@@ -187,6 +235,9 @@ def main():
             car.ySpeed = 0
             car.xPos = 50
             car.yPos = screen_size_y / 2
+            car.angle_speed = 0
+            car.angle = 0
+            transformSprite(car, car.angle, 1)
             car.fuel = calc_fuel
             changeLabel(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
 
@@ -202,25 +253,6 @@ def main():
 
         def bounce_hor(car):
             car.ySpeed = (-1) * car.ySpeed
-
-        # hide = int(car.originalWidth)
-        hide = 20
-
-        car.xPos += car.xSpeed
-        if car.xPos > screen_size_x + hide:
-            if car.health > 1:
-                restart(car)
-            else:
-                restart_game()
-        elif car.xPos < -hide:
-            bounce_ver(car)
-
-        car.yPos += car.ySpeed
-        if car.yPos > screen_size_y + hide:
-            bounce_hor(car)
-        elif car.yPos < -hide:
-            bounce_hor(car)
-        moveSprite(car, car.xPos, car.yPos, True)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:

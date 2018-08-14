@@ -1,12 +1,0 @@
-Adobe After Effects v13.5 Windows 64 render log for project “blackhole.aep”
-
-Rendering started on 08/09/18 at 7:43:26 PM
-
-  08/09/18 7:43:26 PM: Starting composition “blackhole”.
-
-  Output To: C:\Users\Terolli\PycharmProjects\Supercluster\images\blackhole.mov    08/09/18 7:43:29 PM: Finished composition “blackhole”.
-
-
-  Total Time Elapsed: 3 Seconds
-Log closed on 08/09/18 at 7:43:29 PM
-

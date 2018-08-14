@@ -11,7 +11,7 @@ def main():
     setBackgroundImage("images/bg_max.jpg")
     screen_size_x = GetSystemMetrics(0)
     screen_size_y = GetSystemMetrics(1)
-    edge, new_img, list_obj = get_data("images/p15.jpg")
+    edge, new_img, list_obj = get_data("images/p16.jpg")
     cv2.imwrite("detection_output.jpg", new_img)
     aster_list = []
     black_list = []
@@ -63,7 +63,9 @@ def main():
     car.ySpeed = 0
     car.angle = 0
     car.angle_speed = 0
-    car.thrustAmount = 0.5
+    car.angle_sp_lim = 20
+    car.speed_lim = 30
+    car.thrustAmount = 0.8
     moveSprite(car, car.xPos, car.yPos, True)
     showSprite(car)
 
@@ -73,7 +75,7 @@ def main():
     thrustFrame = 1
     nextframe = clock()
 
-    calc_fuel = (len(black_list) + len(aster_list)) * 3
+    calc_fuel = (len(black_list) + len(aster_list)) * 5
     car.fuel = calc_fuel
     fuel_dis = makeLabel("Fuel:", 30, 10, 40, "white")
     changeLabel(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
@@ -104,6 +106,11 @@ def main():
                         first_time = 0
                         restart_game()
 
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+            pygame.quit()
+            sys.exit()
+
         if key_press("r"):
             car.xSpeed = 0
             car.ySpeed = 0
@@ -114,9 +121,9 @@ def main():
             transformSprite(car, car.angle, 1)
 
         if key_press("left"):
-            car.angle_speed -= 0.3
+            car.angle_speed -= 0.5
         elif key_press("right"):
-            car.angle_speed += 0.3
+            car.angle_speed += 0.5
 
         if key_press("up"):
             if car.fuel > 0:
@@ -175,15 +182,24 @@ def main():
                 car.ySpeed += 0.001
 
         # auto angle slow down
-        if car.angle_speed != 0:
-            if car.angle_speed >= 0:
-                car.angle_speed -= 0.01
-            else:
-                car.angle_speed += 0.01
+        if car.angle_speed > 0:
+            car.angle_speed -= 0.1
+        else:
+            car.angle_speed += 0.1
 
-        # hide = int(car.originalWidth)
         hide = 20
 
+        # car speed limit
+        if car.xSpeed > car.speed_lim:
+            car.xSpeed = car.speed_lim
+        elif car.xSpeed < -car.speed_lim:
+            car.xSpeed = -car.speed_lim
+        if car.ySpeed > car.speed_lim:
+            car.ySpeed = car.speed_lim
+        elif car.ySpeed < -car.speed_lim:
+            car.ySpeed = -car.speed_lim
+
+        # update position and bounce
         car.xPos += car.xSpeed
         if car.xPos > screen_size_x + hide:
             if car.health > 1:
@@ -194,26 +210,29 @@ def main():
                 # restart_game()
         elif car.xPos < -hide:
             bounce_ver(car)
-
         car.yPos += car.ySpeed
         if car.yPos > screen_size_y + hide:
             bounce_hor(car)
         elif car.yPos < -hide:
             bounce_hor(car)
-
         moveSprite(car, car.xPos, car.yPos, True)
+
+        # angle speed limit and update angle
+        if car.angle_speed > car.angle_sp_lim:
+            car.angle_speed = car.angle_sp_lim
+        elif car.angle_speed < -car.angle_sp_lim:
+            car.angle_speed = -car.angle_sp_lim
         car.angle += car.angle_speed
         transformSprite(car, car.angle, 1)
 
+        # update asteroid position
         for i in aster_list:
             hide = int(i.originalWidth)
-
             i.x += i.xspeed
             if i.x > screen_size_x + hide:
                 i.x = -hide
             elif i.x < -hide:
                 i.x = screen_size_x + hide
-
             i.y += i.yspeed
             if i.y > screen_size_y + hide:
                 i.y = -hide
@@ -236,28 +255,15 @@ def main():
             car.xPos = 50
             car.yPos = screen_size_y / 2
             car.angle_speed = 0
-            car.angle = 0
-            transformSprite(car, car.angle, 1)
             car.fuel = calc_fuel
             changeLabel(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
-
-        def end(car):
-            for i in aster_list:
-                i.xspeed = 0
-                i.yspeed = 0
-                car.xSpeed = 0
-                car.ySpeed = 0
+            transformSprite(car, car.angle, 1)
 
         def bounce_ver(car):
             car.xSpeed = (-1) * car.xSpeed
 
         def bounce_hor(car):
             car.ySpeed = (-1) * car.ySpeed
-
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_ESCAPE]:
-            pygame.quit()
-            sys.exit()
 
         hit = allTouching(car)
 

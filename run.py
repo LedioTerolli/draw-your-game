@@ -12,7 +12,7 @@ def main():
     screen_size_x = GetSystemMetrics(0)
     screen_size_y = GetSystemMetrics(1)
     edge, new_img, list_obj = get_data("images/p16.jpg")
-    cv2.imwrite("detection_output.jpg", new_img)
+    cv2.imwrite("images/detection_output.jpg", new_img)
     aster_list = []
     black_list = []
 
@@ -27,12 +27,12 @@ def main():
             else:
                 file = "images/planet2_50_1.png"
 
-            stripe = makeSprite("images/stripe_1080_1_dashed.png")
+            stripe = make_sprite("images/stripe_1080_1_dashed.png")
             stripe.move(list_obj[i].center[0], screen_size_y / 2, True)
             # stripe.move(list_obj[i].center[0], list_obj[i].center[1], True)
-            # showSprite(stripe)
+            # show_sprite(stripe)
 
-            sprite = makeSprite(file)
+            sprite = make_sprite(file)
             sprite.move(list_obj[i].center[0], list_obj[i].center[1], True)
             sprite.x = list_obj[i].center[0]
             sprite.y = list_obj[i].center[1]
@@ -40,54 +40,63 @@ def main():
             sprite.yspeed = (area / 200) * ((-1) ** random.randrange(0, 100))
             sprite.changeImage(0)
             aster_list.append(sprite)
-            showSprite(sprite)
+            show_sprite(sprite)
 
         else:
-            sprite = makeSprite("images/wormhole_50_1.png")
+            sprite = make_sprite("images/wormhole_50_1.png")
             sprite.move(list_obj[i].center[0], list_obj[i].center[1], True)
             sprite.changeImage(0)
             black_list.append(sprite)
-            showSprite(sprite)
+            show_sprite(sprite)
 
-    mars = makeSprite("images/mars_100_1.png")
+    mars = make_sprite("images/mars_100_1.png")
     mars.move(screen_size_x, screen_size_y / 2, True)
-    showSprite(mars)
+    show_sprite(mars)
 
-    car = makeSprite("images/tesla_small0_1.png")
+    # CAR parameters
+    car = make_sprite("images/tesla_small0_1.png")
     addSpriteImage(car, "images/tesla_small1_1.png")
     addSpriteImage(car, "images/tesla_small2_1.png")
+
     car.health = 3
+    car.thrustAmount = 0.7
+
     car.xPos = 20
     car.yPos = screen_size_y / 2
     car.xSpeed = 0
     car.ySpeed = 0
+    car.slow_down = 0.05
+    car.slow_down_auto = 0.001
+    car.speed_lim = 40
+
     car.angle = 0
     car.angle_speed = 0
-    car.angle_sp_lim = 20
-    car.speed_lim = 30
-    car.thrustAmount = 0.7
-    moveSprite(car, car.xPos, car.yPos, True)
-    showSprite(car)
+    car.angle_change = 0.5
+    car.angle_speed_slow_down = 0.05
+    car.angle_speed_slow_down_auto = 0.05
+    car.angle_speed_lim = 20
 
-    life = makeLabel("Life:", 30, 10, 10, "white")
-    changeLabel(life, "Life: {0}".format(str(car.health)))
-    showLabel(life)
-    thrustFrame = 1
+    move_sprite(car, car.xPos, car.yPos, True)
+    show_sprite(car)
+
+    # labels
+    life = make_label("Life:", 30, 10, 10, "white")
+    change_label(life, "Life: {0}".format(str(car.health)))
+    show_label(life)
+    thrust_frame = 1
     nextframe = clock()
 
     calc_fuel = (len(black_list) + len(aster_list)) * 5
     car.fuel = calc_fuel
-    fuel_dis = makeLabel("Fuel:", 30, 10, 40, "white")
-    changeLabel(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
-    showLabel(fuel_dis)
+    fuel_dis = make_label("Fuel:", 30, 10, 40, "white")
+    change_label(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
+    show_label(fuel_dis)
 
-    fpsDisplay = makeLabel("FPS:", 30, 10, 70, "white")
-    showLabel(fpsDisplay)
+    fps_display = make_label("FPS:", 30, 10, 70, "white")
+    show_label(fps_display)
 
     time_pass = clock()
-    slow_down_rate = 0.05
-    auto_slow_down = 0.001
-    angle_speed_slow_down = 0.1
+
     first_time = 0
     first_time_bh = 0
 
@@ -123,22 +132,22 @@ def main():
             transformSprite(car, car.angle, 1)
 
         if key_press("left"):
-            car.angle_speed -= 0.5
+            car.angle_speed -= car.angle_change
         elif key_press("right"):
-            car.angle_speed += 0.5
+            car.angle_speed += car.angle_change
 
-        if key_press("up"):
+        elif key_press("up"):
             if car.fuel > 0:
                 car.fuel -= 1
-                changeLabel(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
+                change_label(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
                 if clock() > nextframe:
                     nextframe = clock() + 50
-                    if thrustFrame == 1:
+                    if thrust_frame == 1:
                         changeSpriteImage(car, 1)
-                        thrustFrame = 2
+                        thrust_frame = 2
                     else:
                         changeSpriteImage(car, 2)
-                        thrustFrame = 1
+                        thrust_frame = 1
             else:
                 changeSpriteImage(car, 0)
 
@@ -148,44 +157,44 @@ def main():
 
             if car.angle_speed != 0:
                 if car.angle_speed >= 0:
-                    car.angle_speed -= 0.1
+                    car.angle_speed -= car.angle_speed_slow_down
                 else:
-                    car.angle_speed += 0.1
+                    car.angle_speed += car.angle_speed_slow_down
         elif key_press("down"):
             # slow down
             changeSpriteImage(car, 0)
             if car.xSpeed > 0:
-                car.xSpeed -= slow_down_rate * abs(car.xSpeed)
+                car.xSpeed -= car.slow_down * abs(car.xSpeed)
             elif car.xSpeed <= 0:
-                car.xSpeed += slow_down_rate * abs(car.xSpeed)
+                car.xSpeed += car.slow_down * abs(car.xSpeed)
             if car.ySpeed > 0:
-                car.ySpeed -= slow_down_rate * abs(car.ySpeed)
+                car.ySpeed -= car.slow_down * abs(car.ySpeed)
             elif car.ySpeed <= 0:
-                car.ySpeed += slow_down_rate * abs(car.ySpeed)
+                car.ySpeed += car.slow_down * abs(car.ySpeed)
 
             # angle speed slow down
             if car.angle_speed != 0:
                 if car.angle_speed >= 0:
-                    car.angle_speed -= angle_speed_slow_down * abs(car.angle_speed)
+                    car.angle_speed -= car.angle_speed_slow_down * abs(car.angle_speed)
                 else:
-                    car.angle_speed += angle_speed_slow_down * abs(car.angle_speed)
+                    car.angle_speed += car.angle_speed_slow_down * abs(car.angle_speed)
         else:
             # auto slow down
             changeSpriteImage(car, 0)
             if car.xSpeed > 0:
-                car.xSpeed -= auto_slow_down * abs(car.xSpeed)
+                car.xSpeed -= car.slow_down_auto * abs(car.xSpeed)
             elif car.xSpeed <= 0:
-                car.xSpeed += auto_slow_down * abs(car.xSpeed)
+                car.xSpeed += car.slow_down_auto * abs(car.xSpeed)
             if car.ySpeed > 0:
-                car.ySpeed -= auto_slow_down * abs(car.ySpeed)
+                car.ySpeed -= car.slow_down_auto * abs(car.ySpeed)
             elif car.ySpeed <= 0:
-                car.ySpeed += auto_slow_down * abs(car.ySpeed)
+                car.ySpeed += car.slow_down_auto * abs(car.ySpeed)
 
-        # auto angle slow down
-        if car.angle_speed > 0:
-            car.angle_speed -= 0.1
-        else:
-            car.angle_speed += 0.1
+            # auto angle slow down
+            if car.angle_speed > 0:
+                car.angle_speed -= car.angle_speed_slow_down_auto * abs(car.angle_speed)
+            else:
+                car.angle_speed += car.angle_speed_slow_down_auto * abs(car.angle_speed)
 
         hide = 20
 
@@ -204,10 +213,8 @@ def main():
         if car.xPos > screen_size_x + hide:
             if car.health > 1:
                 bounce_ver(car)
-                # restart(car)
             else:
                 bounce_ver(car)
-                # restart_game()
         elif car.xPos < -hide:
             bounce_ver(car)
         car.yPos += car.ySpeed
@@ -215,13 +222,13 @@ def main():
             bounce_hor(car)
         elif car.yPos < -hide:
             bounce_hor(car)
-        moveSprite(car, car.xPos, car.yPos, True)
+        move_sprite(car, car.xPos, car.yPos, True)
 
         # angle speed limit and update angle
-        if car.angle_speed > car.angle_sp_lim:
-            car.angle_speed = car.angle_sp_lim
-        elif car.angle_speed < -car.angle_sp_lim:
-            car.angle_speed = -car.angle_sp_lim
+        if car.angle_speed > car.angle_speed_lim:
+            car.angle_speed = car.angle_speed_lim
+        elif car.angle_speed < -car.angle_speed_lim:
+            car.angle_speed = -car.angle_speed_lim
         car.angle += car.angle_speed
         transformSprite(car, car.angle, 1)
 
@@ -238,25 +245,25 @@ def main():
                 i.y = -hide
             elif i.y < -hide:
                 i.y = screen_size_y + hide
-            moveSprite(i, i.x, i.y, True)
+            move_sprite(i, i.x, i.y, True)
 
         def restart_game():
             hideAll()
-            hideLabel(fpsDisplay)
+            hideLabel(fps_display)
             hideLabel(fuel_dis)
             hideLabel(life)
             main()
 
         def restart(car):
             car.health -= 1
-            changeLabel(life, "Life: {0}".format(str(car.health)))
+            change_label(life, "Life: {0}".format(str(car.health)))
             car.xSpeed = 0
             car.ySpeed = 0
             car.xPos = 50
             car.yPos = screen_size_y / 2
             car.angle_speed = 0
             car.fuel = calc_fuel
-            changeLabel(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
+            change_label(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
             transformSprite(car, car.angle, 1)
 
         def bounce_ver(car):
@@ -266,7 +273,6 @@ def main():
             car.ySpeed = (-1) * car.ySpeed
 
         hit = allTouching(car)
-
         # wormhole algorithm
         if len(hit) > 0:
             if hit[-1] in black_list:
@@ -289,8 +295,8 @@ def main():
                 restart_game()
 
         fps = tick(60)
-        changeLabel(fpsDisplay, "FPS: {0}".format(str(round(fps))))
-        # changeLabel(fpsDisplay, "FPS: {0}".format(str(round(fps, 2))))
+        change_label(fps_display, "FPS: {0}".format(str(round(fps))))
+        # change_label(fps_display, "FPS: {0}".format(str(round(fps, 2))))
 
 
 main()

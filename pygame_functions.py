@@ -290,7 +290,7 @@ def screenSize(sizex, sizey, xpos=None, ypos=None, fullscreen=False):
     return screen
 
 
-def moveSprite(sprite, x, y, centre=False):
+def move_sprite(sprite, x, y, centre=False):
     sprite.move(x, y, centre)
     if screenRefresh:
         updateDisplay()
@@ -330,13 +330,13 @@ def hideAll():
         updateDisplay()
 
 
-def showSprite(sprite):
+def show_sprite(sprite):
     spriteGroup.add(sprite)
     if screenRefresh:
         updateDisplay()
 
 
-def makeSprite(filename, frames=1):
+def make_sprite(filename, frames=1):
     thisSprite = newSprite(filename, frames)
     return thisSprite
 
@@ -370,7 +370,7 @@ def allTouching(spritename):
         return []
 
 
-def makeLabel(text, fontSize, xpos, ypos, fontColour='black', font='Arial', background="clear"):
+def make_label(text, fontSize, xpos, ypos, fontColour='black', font='Arial', background="clear"):
     # make a text sprite
     thisText = newLabel(text, fontSize, font, fontColour, xpos, ypos, background)
     return thisText
@@ -382,7 +382,7 @@ def moveLabel(sprite, x, y):
         updateDisplay()
 
 
-def changeLabel(textObject, newText, fontColour=None, background=None):
+def change_label(textObject, newText, fontColour=None, background=None):
     textObject.update(newText, fontColour, background)
 
 
@@ -401,7 +401,7 @@ def tick(fps):
     return gameClock.get_fps()
 
 
-def showLabel(labelName):
+def show_label(labelName):
     textboxGroup.add(labelName)
     if screenRefresh:
         updateDisplay()

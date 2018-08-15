@@ -32,19 +32,19 @@ for i in range(len(levels_dir)):
     new_name = 'images/thumbnail/' + levels_dir[i]
     filename = "%s" % new_name
     cv2.imwrite(filename, img)
+    counter = 0
 
 
-def main():
+def main(counter):
     screen = screenSize(1920, 1080, True)
     setBackgroundImage("images/bg_max.jpg")
     screen_size_x = GetSystemMetrics(0)
     screen_size_y = GetSystemMetrics(1)
 
-    i = 0
-    i = start_menu()
+    counter = start_menu(counter)
 
     levels_dir = os.listdir('images/levels')
-    name = 'images/levels/' + levels_dir[i]
+    name = 'images/levels/' + levels_dir[counter]
     filename = "%s" % name
 
     edge, new_img, list_obj = get_data(filename)
@@ -147,11 +147,14 @@ def main():
                 else:
                     if time_pass < clock():
                         first_time = 0
-                        restart_game()
+                        restart_game(counter)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
-            pause_menu()
+            temp = counter
+            counter = pause_menu(counter)
+            if temp != counter:
+                restart_game(counter)
 
         if key_press("r"):
             car.xSpeed = 0
@@ -275,12 +278,12 @@ def main():
                 i.y = screen_size_y + hide
             move_sprite(i, i.x, i.y, True)
 
-        def restart_game():
+        def restart_game(counter):
             hideAll()
             hideLabel(fps_display)
             hideLabel(fuel_dis)
             hideLabel(life)
-            main()
+            main(counter)
 
         def restart(car):
             car.health -= 1
@@ -318,13 +321,13 @@ def main():
                     restart(car)
                     first_time_bh = 0
                 else:
-                    restart_game()
+                    restart_game(counter)
             else:
-                restart_game()
+                restart_game(counter)
 
         fps = tick(60)
         change_label(fps_display, "FPS: {0}".format(str(round(fps))))
         # change_label(fps_display, "FPS: {0}".format(str(round(fps, 2))))
 
 
-main()
+main(counter)

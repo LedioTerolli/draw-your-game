@@ -6,74 +6,78 @@ screen_size_x = GetSystemMetrics(0)
 screen_size_y = GetSystemMetrics(1)
 
 
-def start_menu():
-    start = make_sprite('images/start.png')
-    levels = make_sprite('images/levels.png')
-    exit = make_sprite('images/exit.png')
+def start_menu(new):
 
-    start.move(screen_size_x / 2 - 500, screen_size_y / 2, True)
-    levels.move(screen_size_x / 2 - 500, screen_size_y / 2 + 100, True)
-    exit.move(screen_size_x / 2 - 500, screen_size_y / 2 + 200, True)
+    i = new
 
-    show_sprite(start)
-    show_sprite(levels)
-    show_sprite(exit)
+    start_sprite = make_sprite('images/start.png')
+    levels_sprite = make_sprite('images/levels.png')
+    exit_sprite = make_sprite('images/exit.png')
 
-    while 1:
-        pause(1, False)
-        if spriteClicked(start):
-            hideSprite(start)
-            hideSprite(levels)
-            hideSprite(exit)
-            return 0
-            break
-        elif spriteClicked(levels):
-            hideSprite(start)
-            hideSprite(levels)
-            hideSprite(exit)
-            return level_menu()
-        elif spriteClicked(exit):
-            pygame.quit()
-            sys.exit()
-            break
+    start_sprite.move(screen_size_x / 2 - 500, screen_size_y / 2, True)
+    levels_sprite.move(screen_size_x / 2 - 500, screen_size_y / 2 + 100, True)
+    exit_sprite.move(screen_size_x / 2 - 500, screen_size_y / 2 + 200, True)
 
-
-
-def pause_menu():
-    start_menu_sprite = make_sprite('images/start_menu.png')
-    resume = make_sprite('images/resume.png')
-    exit = make_sprite('images/exit.png')
-
-    resume.move(screen_size_x / 2, screen_size_y / 2, True)
-    start_menu_sprite.move(screen_size_x / 2, screen_size_y / 2 + 100, True)
-    exit.move(screen_size_x / 2, screen_size_y / 2 + 200, True)
-
-    show_sprite(resume)
-    show_sprite(start_menu_sprite)
-    show_sprite(exit)
+    show_sprite(start_sprite)
+    show_sprite(levels_sprite)
+    show_sprite(exit_sprite)
 
     while 1:
         pause(1, False)
-        if spriteClicked(resume):
-            hideSprite(resume)
-            hideSprite(start_menu_sprite)
-            hideSprite(exit)
-            break
-        elif spriteClicked(start_menu_sprite):
-            hideSprite(resume)
-            hideSprite(start_menu_sprite)
-            hideSprite(exit)
-            return start_menu()
-        elif spriteClicked(exit):
+        if spriteClicked(start_sprite):
+            hideSprite(start_sprite)
+            hideSprite(levels_sprite)
+            hideSprite(exit_sprite)
+            return i
+        elif spriteClicked(levels_sprite):
+            hideSprite(start_sprite)
+            hideSprite(levels_sprite)
+            hideSprite(exit_sprite)
+            return level_menu(i)
+        elif spriteClicked(exit_sprite):
             pygame.quit()
             sys.exit()
-            break
+            return i
 
 
-def level_menu():
-    start_menu_sprite = make_sprite('images/start_menu.png')
-    start_menu_sprite.move(screen_size_x / 2, screen_size_y / 1.5, True)
-    show_sprite(start_menu_sprite)
+def pause_menu(new):
+    i = new
+
+    resume_sprite = make_sprite('images/resume.png')
+    levels_sprite = make_sprite('images/levels.png')
+    exit_sprite = make_sprite('images/exit.png')
+
+    resume_sprite.move(screen_size_x / 2, screen_size_y / 2, True)
+    levels_sprite.move(screen_size_x / 2, screen_size_y / 2 + 100, True)
+    exit_sprite.move(screen_size_x / 2, screen_size_y / 2 + 200, True)
+
+    show_sprite(resume_sprite)
+    show_sprite(levels_sprite)
+    show_sprite(exit_sprite)
+
+    while 1:
+        pause(1, False)
+        if spriteClicked(resume_sprite):
+            hideSprite(resume_sprite)
+            hideSprite(levels_sprite)
+            hideSprite(exit_sprite)
+            return i
+        elif spriteClicked(levels_sprite):
+            hideSprite(resume_sprite)
+            hideSprite(levels_sprite)
+            hideSprite(exit_sprite)
+            return level_menu(i)
+        elif spriteClicked(exit_sprite):
+            pygame.quit()
+            sys.exit()
+            return i
+
+
+def level_menu(new):
+    i = new
+    back_sprite = make_sprite('images/back.png')
+    back_sprite.move(screen_size_x / 2, screen_size_y / 1.5, True)
+    show_sprite(back_sprite)
 
     levels_dir = os.listdir('images/levels')
     level_list = []
@@ -93,17 +97,17 @@ def level_menu():
 
     while 1:
         pause(1, False)
-
         for x in range(len(level_list)):
             if spriteClicked(level_list[x]):
-                for i in level_list:
-                    hideSprite(i)
-                hideSprite(start_menu_sprite)
-                return x
+                for y in level_list:
+                    hideSprite(y)
+                hideSprite(back_sprite)
+                i = x
+                return start_menu(i)
 
-        if spriteClicked(start_menu_sprite):
-            for i in level_list:
-                hideSprite(i)
-            hideSprite(start_menu_sprite)
-            start_menu()
-            break
+            elif spriteClicked(back_sprite):
+                for z in level_list:
+                    hideSprite(z)
+                hideSprite(back_sprite)
+                return start_menu(i)
+

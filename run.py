@@ -1,5 +1,5 @@
 from win32api import GetSystemMetrics
-from pygame_functions import *
+from fun import *
 from image_process import get_data
 import random
 import sys
@@ -36,8 +36,8 @@ for i in range(len(levels_dir)):
 
 
 def main(counter):
-    screen = screenSize(1920, 1080, True)
-    setBackgroundImage("images/bg_max.jpg")
+    screen = screen_size(1920, 1080, True)
+    set_background_image("images/bg_max.jpg")
     screen_size_x = GetSystemMetrics(0)
     screen_size_y = GetSystemMetrics(1)
 
@@ -87,8 +87,8 @@ def main(counter):
 
     # CAR parameters
     car = make_sprite("images/tesla_small0_1.png")
-    addSpriteImage(car, "images/tesla_small1_1.png")
-    addSpriteImage(car, "images/tesla_small2_1.png")
+    add_sprite_image(car, "images/tesla_small1_1.png")
+    add_sprite_image(car, "images/tesla_small2_1.png")
 
     car.health = 3
     car.thrustAmount = 0.7
@@ -163,7 +163,7 @@ def main(counter):
             car.yPos = screen_size_y / 2
             car.angle_speed = 0
             car.angle = 0
-            transformSprite(car, car.angle, 1)
+            transform_sprite(car, car.angle, 1)
 
         if key_press("left"):
             car.angle_speed -= car.angle_change
@@ -177,13 +177,13 @@ def main(counter):
                 if clock() > nextframe:
                     nextframe = clock() + 50
                     if thrust_frame == 1:
-                        changeSpriteImage(car, 1)
+                        change_sprite_image(car, 1)
                         thrust_frame = 2
                     else:
-                        changeSpriteImage(car, 2)
+                        change_sprite_image(car, 2)
                         thrust_frame = 1
             else:
-                changeSpriteImage(car, 0)
+                change_sprite_image(car, 0)
 
             if car.fuel > 0:
                 car.xSpeed += math.sin(math.radians(car.angle)) * car.thrustAmount
@@ -196,7 +196,7 @@ def main(counter):
                     car.angle_speed += car.angle_speed_slow_down
         elif key_press("down"):
             # slow down
-            changeSpriteImage(car, 0)
+            change_sprite_image(car, 0)
             if car.xSpeed > 0:
                 car.xSpeed -= car.slow_down * abs(car.xSpeed)
             elif car.xSpeed <= 0:
@@ -213,7 +213,7 @@ def main(counter):
                     car.angle_speed += car.angle_speed_slow_down * abs(car.angle_speed)
         elif not (key_press("left") or key_press("right")):
             # slow down auto
-            changeSpriteImage(car, 0)
+            change_sprite_image(car, 0)
             if car.xSpeed > 0:
                 car.xSpeed -= car.slow_down_auto * abs(car.xSpeed)
             elif car.xSpeed <= 0:
@@ -261,7 +261,7 @@ def main(counter):
         elif car.angle_speed < -car.angle_speed_lim:
             car.angle_speed = -car.angle_speed_lim
         car.angle += car.angle_speed
-        transformSprite(car, car.angle, 1)
+        transform_sprite(car, car.angle, 1)
 
         # update asteroid position
         for i in aster_list:
@@ -279,10 +279,10 @@ def main(counter):
             move_sprite(i, i.x, i.y, True)
 
         def restart_game(counter):
-            hideAll()
-            hideLabel(fps_display)
-            hideLabel(fuel_dis)
-            hideLabel(life)
+            hide_all()
+            hide_label(fps_display)
+            hide_label(fuel_dis)
+            hide_label(life)
             main(counter)
 
         def restart(car):
@@ -295,7 +295,7 @@ def main(counter):
             car.angle_speed = 0
             car.fuel = calc_fuel
             change_label(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
-            transformSprite(car, car.angle, 1)
+            transform_sprite(car, car.angle, 1)
 
         def bounce_ver(car):
             car.xSpeed = (-1) * car.xSpeed
@@ -303,7 +303,7 @@ def main(counter):
         def bounce_hor(car):
             car.ySpeed = (-1) * car.ySpeed
 
-        hit = allTouching(car)
+        hit = all_colliding(car)
         # wormhole algorithm
         if len(hit) > 0:
             if hit[-1] in black_list:

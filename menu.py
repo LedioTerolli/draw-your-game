@@ -1,4 +1,4 @@
-from pygame_functions import *
+from fun import *
 from win32api import GetSystemMetrics
 import os, os.path
 
@@ -24,17 +24,17 @@ def start_menu(new):
 
     while 1:
         pause(1, False)
-        if spriteClicked(start_sprite):
-            hideSprite(start_sprite)
-            hideSprite(levels_sprite)
-            hideSprite(exit_sprite)
+        if sprite_clicked(start_sprite):
+            hide_sprite(start_sprite)
+            hide_sprite(levels_sprite)
+            hide_sprite(exit_sprite)
             return i
-        elif spriteClicked(levels_sprite):
-            hideSprite(start_sprite)
-            hideSprite(levels_sprite)
-            hideSprite(exit_sprite)
+        elif sprite_clicked(levels_sprite):
+            hide_sprite(start_sprite)
+            hide_sprite(levels_sprite)
+            hide_sprite(exit_sprite)
             return level_menu(i)
-        elif spriteClicked(exit_sprite):
+        elif sprite_clicked(exit_sprite):
             pygame.quit()
             sys.exit()
             return i
@@ -57,17 +57,17 @@ def pause_menu(new):
 
     while 1:
         pause(1, False)
-        if spriteClicked(resume_sprite):
-            hideSprite(resume_sprite)
-            hideSprite(levels_sprite)
-            hideSprite(exit_sprite)
+        if sprite_clicked(resume_sprite):
+            hide_sprite(resume_sprite)
+            hide_sprite(levels_sprite)
+            hide_sprite(exit_sprite)
             return i
-        elif spriteClicked(levels_sprite):
-            hideSprite(resume_sprite)
-            hideSprite(levels_sprite)
-            hideSprite(exit_sprite)
+        elif sprite_clicked(levels_sprite):
+            hide_sprite(resume_sprite)
+            hide_sprite(levels_sprite)
+            hide_sprite(exit_sprite)
             return level_menu(i)
-        elif spriteClicked(exit_sprite):
+        elif sprite_clicked(exit_sprite):
             pygame.quit()
             sys.exit()
             return i
@@ -98,16 +98,16 @@ def level_menu(new):
     while 1:
         pause(1, False)
         for x in range(len(level_list)):
-            if spriteClicked(level_list[x]):
+            if sprite_clicked(level_list[x]):
                 for y in level_list:
-                    hideSprite(y)
-                hideSprite(back_sprite)
+                    hide_sprite(y)
+                hide_sprite(back_sprite)
                 i = x
                 return start_menu(i)
 
-            elif spriteClicked(back_sprite):
+            elif sprite_clicked(back_sprite):
                 for z in level_list:
-                    hideSprite(z)
-                hideSprite(back_sprite)
+                    hide_sprite(z)
+                hide_sprite(back_sprite)
                 return start_menu(i)
 

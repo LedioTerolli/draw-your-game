@@ -6,51 +6,50 @@ import math
 pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.init()
 pygame.mixer.init()
-spriteGroup = pygame.sprite.OrderedUpdates()
-textboxGroup = pygame.sprite.OrderedUpdates()
-gameClock = pygame.time.Clock()
-musicPaused = False
-hiddenSprites = pygame.sprite.OrderedUpdates()
-screenRefresh = True
+sprite_group = pygame.sprite.OrderedUpdates()
+textbox_group = pygame.sprite.OrderedUpdates()
+game_clock = pygame.time.Clock()
+hidden_sprites = pygame.sprite.OrderedUpdates()
+screen_refresh = True
 background = None
-keydict = {"space": pygame.K_SPACE, "esc": pygame.K_ESCAPE, "up": pygame.K_UP, "down": pygame.K_DOWN,
-           "left": pygame.K_LEFT, "right": pygame.K_RIGHT,
-           "a": pygame.K_a,
-           "b": pygame.K_b,
-           "c": pygame.K_c,
-           "d": pygame.K_d,
-           "e": pygame.K_e,
-           "f": pygame.K_f,
-           "g": pygame.K_g,
-           "h": pygame.K_h,
-           "i": pygame.K_i,
-           "j": pygame.K_j,
-           "k": pygame.K_k,
-           "l": pygame.K_l,
-           "m": pygame.K_m,
-           "n": pygame.K_n,
-           "o": pygame.K_o,
-           "p": pygame.K_p,
-           "q": pygame.K_q,
-           "r": pygame.K_r,
-           "s": pygame.K_s,
-           "t": pygame.K_t,
-           "u": pygame.K_u,
-           "v": pygame.K_v,
-           "w": pygame.K_w,
-           "x": pygame.K_x,
-           "y": pygame.K_y,
-           "z": pygame.K_z,
-           "1": pygame.K_1,
-           "2": pygame.K_2,
-           "3": pygame.K_3,
-           "4": pygame.K_4,
-           "5": pygame.K_5,
-           "6": pygame.K_6,
-           "7": pygame.K_7,
-           "8": pygame.K_8,
-           "9": pygame.K_9,
-           "0": pygame.K_0}
+key_codes = {"space": pygame.K_SPACE, "esc": pygame.K_ESCAPE, "up": pygame.K_UP, "down": pygame.K_DOWN,
+             "left": pygame.K_LEFT, "right": pygame.K_RIGHT,
+             "a": pygame.K_a,
+             "b": pygame.K_b,
+             "c": pygame.K_c,
+             "d": pygame.K_d,
+             "e": pygame.K_e,
+             "f": pygame.K_f,
+             "g": pygame.K_g,
+             "h": pygame.K_h,
+             "i": pygame.K_i,
+             "j": pygame.K_j,
+             "k": pygame.K_k,
+             "l": pygame.K_l,
+             "m": pygame.K_m,
+             "n": pygame.K_n,
+             "o": pygame.K_o,
+             "p": pygame.K_p,
+             "q": pygame.K_q,
+             "r": pygame.K_r,
+             "s": pygame.K_s,
+             "t": pygame.K_t,
+             "u": pygame.K_u,
+             "v": pygame.K_v,
+             "w": pygame.K_w,
+             "x": pygame.K_x,
+             "y": pygame.K_y,
+             "z": pygame.K_z,
+             "1": pygame.K_1,
+             "2": pygame.K_2,
+             "3": pygame.K_3,
+             "4": pygame.K_4,
+             "5": pygame.K_5,
+             "6": pygame.K_6,
+             "7": pygame.K_7,
+             "8": pygame.K_8,
+             "9": pygame.K_9,
+             "0": pygame.K_0}
 screen = ""
 
 
@@ -58,7 +57,7 @@ def key_press(key_check=""):
     pygame.event.clear()
     keys = pygame.key.get_pressed()
     if sum(keys) > 0:
-        if key_check == "" or keys[keydict[key_check.lower()]]:
+        if key_check == "" or keys[key_codes[key_check.lower()]]:
             return True
     return False
 
@@ -115,20 +114,20 @@ def move(list_obj, rank, direction, speed):
         list_obj[rank].tup_coor = list(zip(xp, yp))
 
 
-class Background():
+class the_background():
     def __init__(self):
         self.colour = pygame.Color("black")
         self.dimensions = 0
 
     def setTiles(self, tiles):
         if type(tiles) is str:
-            self.tiles = [[loadImage(tiles)]]
+            self.tiles = [[load_image(tiles)]]
             self.dimensions = 0
         elif type(tiles[0]) is str:
-            self.tiles = [[loadImage(i) for i in tiles], None]
+            self.tiles = [[load_image(i) for i in tiles], None]
             self.dimensions = 1
         else:
-            self.tiles = [[loadImage(i) for i in row] for row in tiles]
+            self.tiles = [[load_image(i) for i in row] for row in tiles]
             self.dimensions = 2
         self.stagePosX = 0
         self.stagePosY = 0
@@ -155,17 +154,17 @@ class Background():
         self.surface = screen.copy()
 
     def setColour(self, colour):
-        self.colour = parseColour(colour)
+        self.colour = parse_colour(colour)
         screen.fill(self.colour)
         pygame.display.update()
         self.surface = screen.copy()
 
 
-class newSprite(pygame.sprite.Sprite):
+class new_sprite(pygame.sprite.Sprite):
     def __init__(self, filename, frames=1):
         pygame.sprite.Sprite.__init__(self)
         self.images = []
-        img = loadImage(filename)
+        img = load_image(filename)
         self.originalWidth = img.get_width() // frames
         self.originalHeight = img.get_height()
         frameSurf = pygame.Surface((self.originalWidth, self.originalHeight), pygame.SRCALPHA, 32)
@@ -185,7 +184,7 @@ class newSprite(pygame.sprite.Sprite):
         self.scale = 1
 
     def addImage(self, filename):
-        self.images.append(loadImage(filename))
+        self.images.append(load_image(filename))
 
     def move(self, xpos, ypos, centre=False):
         if centre:
@@ -206,15 +205,15 @@ class newSprite(pygame.sprite.Sprite):
         self.originalHeight = originalRect.height
         self.rect.center = oldcenter
         self.mask = pygame.mask.from_surface(self.image)
-        if screenRefresh:
-            updateDisplay()
+        if screen_refresh:
+            update_display()
 
 
-class newLabel(pygame.sprite.Sprite):
+class new_label(pygame.sprite.Sprite):
     def __init__(self, text, fontSize, font, fontColour, xpos, ypos, background):
         pygame.sprite.Sprite.__init__(self)
         self.text = text
-        self.fontColour = parseColour(fontColour)
+        self.fontColour = parse_colour(fontColour)
         self.fontFace = pygame.font.match_font(font)
         self.fontSize = fontSize
         self.background = background
@@ -225,15 +224,15 @@ class newLabel(pygame.sprite.Sprite):
     def update(self, newText, fontColour, background):
         self.text = newText
         if fontColour:
-            self.fontColour = parseColour(fontColour)
+            self.fontColour = parse_colour(fontColour)
         if background:
-            self.background = parseColour(background)
+            self.background = parse_colour(background)
 
         oldTopLeft = self.rect.topleft
         self.renderText()
         self.rect.topleft = oldTopLeft
-        if screenRefresh:
-            updateDisplay()
+        if screen_refresh:
+            update_display()
 
     def renderText(self):
         lineSurfaces = []
@@ -250,7 +249,7 @@ class newLabel(pygame.sprite.Sprite):
         self.image = pygame.Surface((maxWidth, (self.fontSize + 1) * len(textLines) + 5), pygame.SRCALPHA, 32)
         self.image.convert_alpha()
         if self.background != "clear":
-            self.image.fill(parseColour(self.background))
+            self.image.fill(parse_colour(self.background))
         linePos = 0
         for lineSurface in lineSurfaces:
             self.image.blit(lineSurface, [0, linePos])
@@ -258,17 +257,16 @@ class newLabel(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
 
-def loadImage(fileName, useColorKey=False):
+def load_image(fileName, useColorKey=False):
     if os.path.isfile(fileName):
         image = pygame.image.load(fileName)
         image = image.convert_alpha()
-        # Return the image
         return image
     else:
         raise Exception("Error loading image: " + fileName + " - Check filename and path?")
 
 
-def screenSize(sizex, sizey, xpos=None, ypos=None, fullscreen=False):
+def screen_size(sizex, sizey, xpos=None, ypos=None, fullscreen=False):
     global screen
     global background
     if xpos != None and ypos != None:
@@ -282,7 +280,7 @@ def screenSize(sizex, sizey, xpos=None, ypos=None, fullscreen=False):
         screen = pygame.display.set_mode([sizex, sizey], pygame.FULLSCREEN)
     else:
         screen = pygame.display.set_mode([sizex, sizey])
-    background = Background()
+    background = the_background()
     screen.fill(background.colour)
     pygame.display.set_caption("Graphics Window")
     background.surface = screen.copy()
@@ -292,11 +290,31 @@ def screenSize(sizex, sizey, xpos=None, ypos=None, fullscreen=False):
 
 def move_sprite(sprite, x, y, centre=False):
     sprite.move(x, y, centre)
-    if screenRefresh:
-        updateDisplay()
+    if screen_refresh:
+        update_display()
 
 
-def transformSprite(sprite, angle, scale, hflip=False, vflip=False):
+def add_sprite_image(sprite, image):
+    sprite.addImage(image)
+
+
+def change_sprite_image(sprite, index):
+    sprite.changeImage(index)
+
+
+def next_sprite_image(sprite):
+    sprite.currentImage += 1
+    if sprite.currentImage > len(sprite.images) - 1:
+        sprite.currentImage = 0
+    sprite.changeImage(sprite.currentImage)
+
+
+def colliding(sprite1, sprite2):
+    collided = pygame.sprite.collide_mask(sprite1, sprite2)
+    return collided
+
+
+def transform_sprite(sprite, angle, scale, hflip=False, vflip=False):
     oldmiddle = sprite.rect.center
     if hflip or vflip:
         tempImage = pygame.transform.flip(sprite.images[sprite.currentImage], hflip, vflip)
@@ -310,60 +328,40 @@ def transformSprite(sprite, angle, scale, hflip=False, vflip=False):
     sprite.rect = sprite.image.get_rect()
     sprite.rect.center = oldmiddle
     sprite.mask = pygame.mask.from_surface(sprite.image)
-    if screenRefresh:
-        updateDisplay()
+    if screen_refresh:
+        update_display()
 
 
-def setBackgroundColour(colour):
+def set_background_colour(colour):
     background.setColour(colour)
 
 
-def setBackgroundImage(img):
+def set_background_image(img):
     global background
     background.setTiles(img)
 
 
-def hideAll():
-    hiddenSprites.add(spriteGroup.sprites())
-    spriteGroup.empty()
-    if screenRefresh:
-        updateDisplay()
+def hide_all():
+    hidden_sprites.add(sprite_group.sprites())
+    sprite_group.empty()
+    if screen_refresh:
+        update_display()
 
 
 def show_sprite(sprite):
-    spriteGroup.add(sprite)
-    if screenRefresh:
-        updateDisplay()
+    sprite_group.add(sprite)
+    if screen_refresh:
+        update_display()
 
 
 def make_sprite(filename, frames=1):
-    thisSprite = newSprite(filename, frames)
+    thisSprite = new_sprite(filename, frames)
     return thisSprite
 
 
-def addSpriteImage(sprite, image):
-    sprite.addImage(image)
-
-
-def changeSpriteImage(sprite, index):
-    sprite.changeImage(index)
-
-
-def nextSpriteImage(sprite):
-    sprite.currentImage += 1
-    if sprite.currentImage > len(sprite.images) - 1:
-        sprite.currentImage = 0
-    sprite.changeImage(sprite.currentImage)
-
-
-def touching(sprite1, sprite2):
-    collided = pygame.sprite.collide_mask(sprite1, sprite2)
-    return collided
-
-
-def allTouching(spritename):
-    if spriteGroup.has(spritename):
-        collisions = pygame.sprite.spritecollide(spritename, spriteGroup, False, collided=pygame.sprite.collide_mask)
+def all_colliding(spritename):
+    if sprite_group.has(spritename):
+        collisions = pygame.sprite.spritecollide(spritename, sprite_group, False, collided=pygame.sprite.collide_mask)
         collisions.remove(spritename)
         return collisions
     else:
@@ -372,61 +370,11 @@ def allTouching(spritename):
 
 def make_label(text, fontSize, xpos, ypos, fontColour='black', font='Arial', background="clear"):
     # make a text sprite
-    thisText = newLabel(text, fontSize, font, fontColour, xpos, ypos, background)
+    thisText = new_label(text, fontSize, font, fontColour, xpos, ypos, background)
     return thisText
 
 
-def moveLabel(sprite, x, y):
-    sprite.rect.topleft = [x, y]
-    if screenRefresh:
-        updateDisplay()
-
-
-def change_label(textObject, newText, fontColour=None, background=None):
-    textObject.update(newText, fontColour, background)
-
-
-def clock():
-    current_time = pygame.time.get_ticks()
-    return current_time
-
-
-def tick(fps):
-    pygame.event.clear()
-    keys = pygame.key.get_pressed()
-    '''if (keys[pygame.K_ESCAPE]):
-        pygame.quit()
-        sys.exit()'''
-    gameClock.tick(fps)
-    return gameClock.get_fps()
-
-
-def show_label(labelName):
-    textboxGroup.add(labelName)
-    if screenRefresh:
-        updateDisplay()
-
-
-def hideLabel(labelName):
-    textboxGroup.remove(labelName)
-    if screenRefresh:
-        updateDisplay()
-
-
-def updateDisplay():
-    global background
-    spriteRects = spriteGroup.draw(screen)
-    textboxRects = textboxGroup.draw(screen)
-    pygame.display.update()
-    keys = pygame.key.get_pressed()
-    '''if (keys[pygame.K_ESCAPE]):
-        pygame.quit()
-        sys.exit()'''
-    spriteGroup.clear(screen, background.surface)
-    textboxGroup.clear(screen, background.surface)
-
-
-def mousePressed():
+def mouse_pressed():
     pygame.event.clear()
     mouseState = pygame.mouse.get_pressed()
     if mouseState[0]:
@@ -435,7 +383,7 @@ def mousePressed():
         return False
 
 
-def spriteClicked(sprite):
+def sprite_clicked(sprite):
     mouseState = pygame.mouse.get_pressed()
     if not mouseState[0]:
         return False  # not pressed
@@ -446,7 +394,7 @@ def spriteClicked(sprite):
         return False
 
 
-def parseColour(colour):
+def parse_colour(colour):
     if type(colour) == str:
         # check to see if valid colour
         return pygame.Color(colour)
@@ -456,26 +404,6 @@ def parseColour(colour):
         colourRGB.g = colour[1]
         colourRGB.b = colour[2]
         return colourRGB
-
-
-def mouseX():
-    x = pygame.mouse.get_pos()
-    return x[0]
-
-
-def mouseY():
-    y = pygame.mouse.get_pos()
-    return y[1]
-
-
-def scrollBackground(x, y):
-    global background
-    background.scroll(x, y)
-
-
-def set_auto_update(val):
-    global screenRefresh
-    screenRefresh = val
 
 
 def pause(milliseconds, allowEsc=True):
@@ -490,9 +418,53 @@ def pause(milliseconds, allowEsc=True):
             sys.exit()
         current_time = pygame.time.get_ticks()
 
-def hideSprite(sprite):
-    hiddenSprites.add(sprite)
-    spriteGroup.remove(sprite)
-    if screenRefresh:
-        updateDisplay()
 
+def hide_sprite(sprite):
+    hidden_sprites.add(sprite)
+    sprite_group.remove(sprite)
+    if screen_refresh:
+        update_display()
+
+
+def move_label(sprite, x, y):
+    sprite.rect.topleft = [x, y]
+    if screen_refresh:
+        update_display()
+
+
+def change_label(textObject, newText, fontColour=None, background=None):
+    textObject.update(newText, fontColour, background)
+
+
+def clock():
+    current_time = pygame.time.get_ticks()
+    return current_time
+
+
+def tick(fps):
+    pygame.event.clear()
+    keys = pygame.key.get_pressed()
+    game_clock.tick(fps)
+    return game_clock.get_fps()
+
+
+def show_label(labelName):
+    textbox_group.add(labelName)
+    if screen_refresh:
+        update_display()
+
+
+def hide_label(labelName):
+    textbox_group.remove(labelName)
+    if screen_refresh:
+        update_display()
+
+
+def update_display():
+    global background
+    spriteRects = sprite_group.draw(screen)
+    textboxRects = textbox_group.draw(screen)
+    pygame.display.update()
+    keys = pygame.key.get_pressed()
+    sprite_group.clear(screen, background.surface)
+    textbox_group.clear(screen, background.surface)

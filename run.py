@@ -5,6 +5,33 @@ import random
 import sys
 import cv2
 from menu import *
+import imutils
+
+# create thumbnail
+levels_dir = os.listdir('images/levels')
+for i in range(len(levels_dir)):
+    name = 'images/levels/' + levels_dir[i]
+    filename = "%s" % name
+
+    img = cv2.imread(filename)
+    hor_size = img.shape[1]
+    ver_size = img.shape[0]
+
+    # rotate & resize
+    if ver_size > hor_size:
+        img = imutils.rotate_bound(img, -90)
+    hor_size = img.shape[1]
+    ver_size = img.shape[0]
+    max_dim = max(hor_size, ver_size)
+    rule = 200
+    r = rule / img.shape[1]
+    dim = (int(rule), int(img.shape[0] * r))
+    if max_dim > rule:
+        img = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+
+    new_name = 'images/thumbnail/' + levels_dir[i]
+    filename = "%s" % new_name
+    cv2.imwrite(filename, img)
 
 
 def main():
@@ -13,9 +40,14 @@ def main():
     screen_size_x = GetSystemMetrics(0)
     screen_size_y = GetSystemMetrics(1)
 
-    start_menu()
+    i = 0
+    i = start_menu()
 
-    edge, new_img, list_obj = get_data("images/levels/level_1.jpg")
+    levels_dir = os.listdir('images/levels')
+    name = 'images/levels/' + levels_dir[i]
+    filename = "%s" % name
+
+    edge, new_img, list_obj = get_data(filename)
     cv2.imwrite("images/detection_output.jpg", new_img)
     aster_list = []
     black_list = []

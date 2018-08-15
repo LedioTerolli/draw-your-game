@@ -394,9 +394,9 @@ def clock():
 def tick(fps):
     pygame.event.clear()
     keys = pygame.key.get_pressed()
-    if (keys[pygame.K_ESCAPE]):
+    '''if (keys[pygame.K_ESCAPE]):
         pygame.quit()
-        sys.exit()
+        sys.exit()'''
     gameClock.tick(fps)
     return gameClock.get_fps()
 
@@ -419,9 +419,9 @@ def updateDisplay():
     textboxRects = textboxGroup.draw(screen)
     pygame.display.update()
     keys = pygame.key.get_pressed()
-    if (keys[pygame.K_ESCAPE]):
+    '''if (keys[pygame.K_ESCAPE]):
         pygame.quit()
-        sys.exit()
+        sys.exit()'''
     spriteGroup.clear(screen, background.surface)
     textboxGroup.clear(screen, background.surface)
 
@@ -476,3 +476,23 @@ def scrollBackground(x, y):
 def set_auto_update(val):
     global screenRefresh
     screenRefresh = val
+
+
+def pause(milliseconds, allowEsc=True):
+    keys = pygame.key.get_pressed()
+    current_time = pygame.time.get_ticks()
+    waittime = current_time + milliseconds
+    while not (current_time > waittime or (keys[pygame.K_ESCAPE] and allowEsc)):
+        pygame.event.clear()
+        keys = pygame.key.get_pressed()
+        if (keys[pygame.K_ESCAPE] and allowEsc):
+            pygame.quit()
+            sys.exit()
+        current_time = pygame.time.get_ticks()
+
+def hideSprite(sprite):
+    hiddenSprites.add(sprite)
+    spriteGroup.remove(sprite)
+    if screenRefresh:
+        updateDisplay()
+

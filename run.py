@@ -5,12 +5,17 @@ import random
 import sys
 import cv2
 
+from menu import *
+
 
 def main():
     screen = screenSize(1920, 1080, True)
     setBackgroundImage("images/bg_max.jpg")
     screen_size_x = GetSystemMetrics(0)
     screen_size_y = GetSystemMetrics(1)
+
+    start_menu()
+
     edge, new_img, list_obj = get_data("images/p15.jpg")
     cv2.imwrite("images/detection_output.jpg", new_img)
     aster_list = []
@@ -115,8 +120,7 @@ def main():
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
-            pygame.quit()
-            sys.exit()
+            pause_menu()
 
         if key_press("r"):
             car.xSpeed = 0

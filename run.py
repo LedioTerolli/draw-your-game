@@ -4,7 +4,6 @@ from image_process import get_data
 import random
 import sys
 import cv2
-
 from menu import *
 
 
@@ -16,7 +15,7 @@ def main():
 
     start_menu()
 
-    edge, new_img, list_obj = get_data("images/p15.jpg")
+    edge, new_img, list_obj = get_data("images/levels/level_1.jpg")
     cv2.imwrite("images/detection_output.jpg", new_img)
     aster_list = []
     black_list = []

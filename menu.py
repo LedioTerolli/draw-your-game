@@ -10,9 +10,9 @@ def start_menu(new):
 
     i = new
 
-    start_sprite = make_sprite('images/start.png')
-    levels_sprite = make_sprite('images/levels.png')
-    exit_sprite = make_sprite('images/exit.png')
+    start_sprite = make_sprite('images/start.jpg')
+    levels_sprite = make_sprite('images/levels.jpg')
+    exit_sprite = make_sprite('images/exit.jpg')
 
     start_sprite.move(screen_size_x / 2 - 500, screen_size_y / 2, True)
     levels_sprite.move(screen_size_x / 2 - 500, screen_size_y / 2 + 100, True)
@@ -43,9 +43,9 @@ def start_menu(new):
 def pause_menu(new):
     i = new
 
-    resume_sprite = make_sprite('images/resume.png')
-    levels_sprite = make_sprite('images/levels.png')
-    exit_sprite = make_sprite('images/exit.png')
+    resume_sprite = make_sprite('images/resume.jpg')
+    levels_sprite = make_sprite('images/levels.jpg')
+    exit_sprite = make_sprite('images/exit.jpg')
 
     resume_sprite.move(screen_size_x / 2, screen_size_y / 2, True)
     levels_sprite.move(screen_size_x / 2, screen_size_y / 2 + 100, True)
@@ -75,7 +75,7 @@ def pause_menu(new):
 
 def level_menu(new):
     i = new
-    back_sprite = make_sprite('images/back.png')
+    back_sprite = make_sprite('images/back.jpg')
     back_sprite.move(screen_size_x / 2, screen_size_y / 1.5, True)
     show_sprite(back_sprite)
 

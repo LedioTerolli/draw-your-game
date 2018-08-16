@@ -91,7 +91,7 @@ def main(counter):
     add_sprite_image(car, "images/tesla_small2_1.png")
 
     car.health = 3
-    car.thrustAmount = 0.7
+    car.thrustAmount = 0.5
 
     car.xPos = 20
     car.yPos = screen_size_y / 2
@@ -103,7 +103,7 @@ def main(counter):
 
     car.angle = 0
     car.angle_speed = 0
-    car.angle_change = 0.5
+    car.angle_change = 0.3
     car.angle_speed_slow_down = 0.05
     car.angle_speed_slow_down_auto = 0.05
     car.angle_speed_lim = 20
@@ -118,7 +118,7 @@ def main(counter):
     thrust_frame = 1
     nextframe = clock()
 
-    calc_fuel = (len(black_list) + len(aster_list)) * 5
+    calc_fuel = (len(black_list) + len(aster_list)) * 3
     car.fuel = calc_fuel
     fuel_dis = make_label("Fuel:", 30, 10, 40, "white")
     change_label(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
@@ -243,9 +243,11 @@ def main(counter):
         car.xPos += car.xSpeed
         if car.xPos > screen_size_x + hide:
             if car.health > 1:
-                bounce_ver(car)
+                # bounce_ver(car)
+                restart(car)
             else:
-                bounce_ver(car)
+                # bounce_ver(car)
+                restart_game(counter)
         elif car.xPos < -hide:
             bounce_ver(car)
         car.yPos += car.ySpeed

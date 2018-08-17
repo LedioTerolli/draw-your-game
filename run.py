@@ -154,7 +154,7 @@ def main(counter):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             temp = counter
-            counter = pause_menu(counter)
+            counter = start_menu(counter)
             if temp != counter:
                 restart_game(counter)
 

@@ -50,7 +50,7 @@ def main(counter):
     edge, new_img, list_obj = get_data(filename)
     cv2.imwrite("images/detection_output.jpg", new_img)
     aster_list = []
-    black_list = []
+    worm_list = []
 
     for i in range(len(list_obj)):
         area = list_obj[i].area
@@ -78,7 +78,7 @@ def main(counter):
             sprite = make_sprite("images/wormhole_50_1.png")
             sprite.move(list_obj[i].center[0], list_obj[i].center[1], True)
             sprite.changeImage(0)
-            black_list.append(sprite)
+            worm_list.append(sprite)
             show_sprite(sprite)
 
     mars = make_sprite("images/mars_100_1.png")
@@ -91,7 +91,7 @@ def main(counter):
     add_sprite_image(car, "images/tesla_small2_1.png")
 
     car.health = 3
-    car.thrustAmount = 0.5
+    car.thrustAmount = 0.7
 
     car.xPos = 20
     car.yPos = screen_size_y / 2
@@ -118,7 +118,10 @@ def main(counter):
     thrust_frame = 1
     nextframe = clock()
 
-    calc_fuel = (len(black_list) + len(aster_list)) * 3
+    calc_fuel = (len(aster_list)) * 3
+    if len(aster_list) == 0 or calc_fuel < 20:
+        calc_fuel = 20
+
     car.fuel = calc_fuel
     fuel_dis = make_label("Fuel:", 30, 10, 40, "white")
     change_label(fuel_dis, "Fuel: {0}".format(str(car.fuel)))
@@ -129,24 +132,23 @@ def main(counter):
 
     time_pass = clock()
 
-    first_time = 0
-    first_time_bh = 0
+    first_time_nofuel = 0
+    first_time_wormhole = 0
 
     while 1:
 
         if car.fuel <= 0:
-            if first_time == 0:
+            if first_time_nofuel == 0:
                 time_pass = clock() + 3000
-                first_time += 1
+                first_time_nofuel += 1
             else:
                 if car.health > 1:
                     if time_pass < clock():
                         restart(car)
-                        first_time = 0
-                        first_time_bh = 0
+                        first_time_nofuel = 0
+                        first_time_wormhole = 0
                 else:
                     if time_pass < clock():
-                        first_time = 0
                         restart_game(counter)
 
         keys = pygame.key.get_pressed()
@@ -308,20 +310,20 @@ def main(counter):
         hit = all_colliding(car)
         # wormhole algorithm
         if len(hit) > 0:
-            if hit[-1] in black_list:
-                if first_time_bh == 0:
-                    rand = len(black_list) - 1
-                if hit[-1] != black_list[rand]:
-                    index = black_list.index(hit[-1])
-                    rand = random.randrange(0, len(black_list))
+            if hit[-1] in worm_list:
+                if first_time_wormhole == 0:
+                    rand = len(worm_list) - 1
+                if hit[-1] != worm_list[rand]:
+                    index = worm_list.index(hit[-1])
+                    rand = random.randrange(0, len(worm_list))
                     while rand == index:
-                        rand = random.randrange(0, len(black_list))
-                    car.xPos, car.yPos = black_list[rand].rect.center
-                    first_time_bh += 1
+                        rand = random.randrange(0, len(worm_list))
+                    car.xPos, car.yPos = worm_list[rand].rect.center
+                    first_time_wormhole += 1
             elif hit[-1] in aster_list:
                 if car.health > 1:
                     restart(car)
-                    first_time_bh = 0
+                    first_time_wormhole = 0
                 else:
                     restart_game(counter)
             else:

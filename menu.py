@@ -82,7 +82,7 @@ def level_menu(new):
     levels_dir = os.listdir('images/levels')
     level_list = []
 
-    start_point_x = (screen_size_x - (len(levels_dir) * 200 + 100)) / 2 + 100
+    start_point_x = (screen_size_x - (len(levels_dir) * 200 + 100*(len(levels_dir)-1))) / 2 + 100
 
     poss = 0
     for i in range(len(levels_dir)):

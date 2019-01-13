@@ -1,4 +1,4 @@
-# DrawToMars
+# draw-your-game
 Takes an image as input, detects triangles and circles using OpenCV, and creates a minigame based on the original image, using Pygame.
 ### How it works:
 + Triangles turn into asteroids and planets. The size of the shape determines the size and speed of the in-game object.
